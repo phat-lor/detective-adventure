@@ -1,0 +1,107 @@
+{
+	"landing": {
+		"title": "The payment gateway that just works.",
+		"description": "Accept payments in minutes with Payma.",
+		"description_type": "No setup fees., No hidden fees., No verification.",
+		"chip": "👷 Under development 🚧",
+		"banner": "Under development🚧, Join our Discord to get the latest updates.",
+		"navbar": {
+			"title": "Payma",
+			"home": "Home",
+			"features": "Features",
+			"about": "About Us",
+			"contact": "Contact",
+			"docs": "Docs",
+			"signin": "Login",
+			"signup": "Get Started"
+		}
+	},
+	"common": {},
+	"pay_invoice": {
+		"title": "Pay {invoiceName}",
+		"description": {
+			"no_method": "No payment method available. if you are the owner of this website, please setup a payment method in the user panel.",
+			"select_method": "Please select a payment method.",
+			"pay": "Please follow the instructions to pay the invoice.",
+			"subtotal": "Total: {formattedPrice}"
+		},
+		"method": {
+			"crypto": {
+				"title": "Cryptocurrency"
+			},
+			"truemoney": {
+				"title": "TrueMoney"
+			}
+		},
+		"invoice_id": "Invoice ID: {invoice_id}",
+		"powered": "Powered by payma.dev",
+		"not_found": "Invoice not found.",
+		"back": {
+			"previous_site": "Back to previous site",
+			"select_method": "Back to method selection"
+		}
+	},
+	"contacts": {
+		"title": "Contact us",
+		"description": "Have any questions or concerns? Feel free to contact us.",
+		"mail": {
+			"title": "Email",
+			"address": "contact@payma.dev"
+		}
+	},
+	"signin": {
+		"title": "Sign in",
+		"description": "Welcome back! enter your credentials to continue.",
+		"form": {
+			"phoneNumber": {
+				"label": "Phone Number",
+				"placeholder": "xxx-xxx-xxxx",
+				"error": "Please enter a valid phone number"
+			},
+			"password": {
+				"label": "Password",
+				"placeholder": "********",
+				"error": "Password must be at least 8 characters long."
+			},
+			"success": "Logged in successfully!",
+			"fieldError": "Please make sure all fields are filled out correctly.",
+			"error": "An error occurred, %error%",
+			"unknownError": "Unknown error.",
+			"submit": "Sign in"
+		},
+
+		"signup": "Don't have an account?"
+	},
+	"signup": {
+		"title": "Sign up",
+		"description": "Hey there! Create an account to start shopping.",
+		"form": {
+			"name": {
+				"label": "Name",
+				"placeholder": "Name",
+				"error": "Your name must be at least 3 characters long."
+			},
+			"phoneNumber": {
+				"label": "Phone Number",
+				"placeholder": "xxx-xxx-xxxx",
+				"error": "Please enter a valid phone number."
+			},
+			"password": {
+				"label": "Password",
+				"placeholder": "********",
+				"error": "Password must be at least 8 characters long."
+			},
+			"confirmPassword": {
+				"label": "Confirm password",
+				"placeholder": "********",
+				"error": "Passwords do not match."
+			},
+			"success": "Account created successfully!",
+			"fieldError": "Please make sure all fields are filled out correctly.",
+			"error": "An error occurred, %error%",
+			"unknownError": "Unknown error.",
+			"submit": "Sign up"
+		},
+		"signin": "Already have an account?"
+	}
+}
