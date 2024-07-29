@@ -6,6 +6,12 @@ import {
 	CardFooter,
 	CardHeader,
 	CircularProgress,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	ScrollShadow,
 } from "@nextui-org/react";
 import { getServerSession } from "next-auth";
 import { getUserTaskById } from "../../server";
@@ -49,28 +55,41 @@ export default async function Page({ params }: { params: { taskID: string } }) {
 	// console.log(JSON.stringify(task));
 
 	return (
-		<Card className="w-full h-[calc(100vh-4.5rem)]">
-			<CardHeader className="text-3xl font-bold">{task?.task.title}</CardHeader>
-			<CardBody className="prose lg:prose-xl w-xl">
-				{task && (
-					// @ts-ignore
-					<ReactMarkdown rehypePlugins={[rehypeRaw]}>
-						{task?.task.locations[0].details}
-					</ReactMarkdown>
-				)}
-			</CardBody>
-			<CardFooter className="flex gap-2 items-center min-h-20">
-				<Button fullWidth color="primary" startContent={<ScanBarcodeIcon />}>
-					Scan
-				</Button>
-				<CircularProgress
-					size="lg"
-					value={2}
-					maxValue={7}
-					showValueLabel
-					color="primary"
-				/>
-			</CardFooter>
-		</Card>
+		<Modal
+			className="w-full h-[calc(100vh-4.5rem)]"
+			isOpen={true}
+			scrollBehavior="inside"
+			hideCloseButton
+			backdrop="transparent"
+			size="xl"
+		>
+			<ModalContent>
+				<ModalHeader className="text-2xl font-bold">
+					{task?.task.title}
+				</ModalHeader>
+				<ModalBody>
+					<div className="prose w-xl ">
+						{task && (
+							// @ts-ignore
+							<ReactMarkdown rehypePlugins={[rehypeRaw]}>
+								{task?.task.locations[0].details}
+							</ReactMarkdown>
+						)}
+					</div>
+				</ModalBody>
+				<ModalFooter className="flex gap-2 items-center ">
+					<Button fullWidth color="primary" startContent={<ScanBarcodeIcon />}>
+						Scan
+					</Button>
+					<CircularProgress
+						size="lg"
+						value={2}
+						maxValue={7}
+						showValueLabel
+						color="primary"
+					/>
+				</ModalFooter>
+			</ModalContent>
+		</Modal>
 	);
 }
