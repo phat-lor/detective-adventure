@@ -49,11 +49,14 @@ function LandingPage() {
 	const [selectedData, setSelectedData] = useState<Task | null>(null);
 	const [data, setData] = useState<UserTasks | null>();
 	const { data: session } = useSession({ required: true });
+	const [loading, setLoading] = useState(false);
 	const route = useRouter();
 	async function fetchData() {
 		// console.log(session?.accessToken);
+		setLoading(true);
 		const data = await getUserTasks(session?.accessToken ?? "");
 		if (!data) {
+			setLoading(false);
 			return;
 		}
 		const processedTasks = data?.data.map((task: Task) => {
@@ -73,6 +76,7 @@ function LandingPage() {
 		});
 		console.log(processedTasks);
 		setData({ data: processedTasks, meta: data.meta });
+		setLoading(false);
 	}
 
 	useEffect(() => {
@@ -131,6 +135,8 @@ function LandingPage() {
 		switch (selectedData?.status) {
 			case "IN_PROGRESS":
 			case "STARTED":
+				setLoading(true);
+
 				toast.success("Task continued", {
 					description: "Task has been continued",
 				});
@@ -142,6 +148,7 @@ function LandingPage() {
 				});
 				break;
 			case "NOT_STARTED":
+				setLoading(true);
 				const res = await startTask(
 					session?.accessToken ?? "",
 					selectedData?.id ?? ""
@@ -286,6 +293,7 @@ function LandingPage() {
 							</ModalBody>
 							<ModalFooter>
 								<Button
+									isLoading={loading}
 									fullWidth
 									color="primary"
 									startContent={
