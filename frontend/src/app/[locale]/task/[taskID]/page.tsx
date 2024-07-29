@@ -59,7 +59,7 @@ export default async function Page({ params }: { params: { taskID: string } }) {
 					</ReactMarkdown>
 				)}
 			</CardBody>
-			<CardFooter className="flex gap-2 h-full items-center">
+			<CardFooter className="flex gap-2 items-center min-h-20">
 				<Button fullWidth color="primary" startContent={<ScanBarcodeIcon />}>
 					Scan
 				</Button>
