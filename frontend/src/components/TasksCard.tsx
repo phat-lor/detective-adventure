@@ -14,81 +14,70 @@ import {
 	EllipsisIcon,
 	ArrowRightIcon,
 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
-const statusIcons = {
-	success: <CheckIcon />,
-	inProgress: <ScanSearchIcon />,
-	await: <EllipsisIcon />,
-};
+type Status = "NOT_STARTED" | "STARTED" | "IN_PROGRESS" | "COMPLETED";
+type Color =
+	| "success"
+	| "warning"
+	| "danger"
+	| "default"
+	| "primary"
+	| "secondary";
 
-const statusColors = {
-	success: "success",
-	inProgress: "warning",
-	await: "danger",
+const STATUS_INFO: Record<Status, { icon: JSX.Element; color: Color }> = {
+	NOT_STARTED: { icon: <ScanSearchIcon />, color: "default" },
+	STARTED: { icon: <ScanSearchIcon />, color: "default" },
+	IN_PROGRESS: { icon: <EllipsisIcon />, color: "primary" },
+	COMPLETED: { icon: <CheckIcon />, color: "success" },
 };
 
 interface TaskCardProps {
-	status: "success" | "inProgress" | "await";
+	title: string;
+	description: string;
+	id: string;
+	status: Status;
 	value: number;
 	maxValue: number;
+	setSelected: (value: string | null) => void;
 }
 
-const TaskCard = ({ status, value, maxValue }: TaskCardProps) => {
-	const statusText = {
-		success: "Task Success",
-		inProgress: "Task In Progress",
-		await: "Task Not Checked",
-	};
-
-	return (
-		<Card className="min-w-full">
-			<CardHeader>
-				<div className="flex w-full justify-between">
-					<p className="font-semibold text-xl">{statusText[status]}</p>
-					<Chip
-						color={
-							statusColors[status] as
-								| "success"
-								| "warning"
-								| "danger"
-								| "default"
-								| "primary"
-								| "secondary"
-						}
-						className="text-white"
-					>
-						{statusIcons[status]}
-					</Chip>
-				</div>
-			</CardHeader>
-			<CardBody>
-				<p>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-					eiusmod tempor incididunt ut labore et dolore magna aliqua.
-				</p>
-			</CardBody>
-			<CardFooter className="justify-between">
-				<CircularProgress
-					size="lg"
-					value={value}
-					maxValue={maxValue}
-					showValueLabel
-					color={
-						statusColors[status] as
-							| "success"
-							| "warning"
-							| "danger"
-							| "default"
-							| "primary"
-							| "secondary"
-					}
-				/>
-				<Button isIconOnly color="primary">
-					<ArrowRightIcon />
-				</Button>
-			</CardFooter>
-		</Card>
-	);
-};
+const TaskCard: React.FC<TaskCardProps> = ({
+	title,
+	description,
+	id,
+	status,
+	value,
+	maxValue,
+	setSelected,
+}) => (
+	<Card fullWidth>
+		<CardHeader className="flex justify-between">
+			<p className="font-semibold text-xl">{title}</p>
+			<Chip color={STATUS_INFO[status].color} className="text-white">
+				{STATUS_INFO[status].icon}
+			</Chip>
+		</CardHeader>
+		<CardBody>
+			{
+				// @ts-ignore
+				<ReactMarkdown rehypePlugins={[rehypeRaw]}>{description}</ReactMarkdown>
+			}
+		</CardBody>
+		<CardFooter className="justify-between">
+			<CircularProgress
+				size="lg"
+				value={value}
+				maxValue={maxValue}
+				showValueLabel
+				color={STATUS_INFO[status].color}
+			/>
+			<Button isIconOnly color="primary" onClick={() => setSelected(id)}>
+				<ArrowRightIcon />
+			</Button>
+		</CardFooter>
+	</Card>
+);
 
 export default TaskCard;

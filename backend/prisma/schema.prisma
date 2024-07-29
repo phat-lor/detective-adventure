@@ -1,9 +1,4 @@
 // This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -29,7 +24,79 @@ model User {
   username String @unique
   password String
 
+  startedTasks UserTask[]
+
   role Role @default(USER)
 
   @@map("users")
+}
+
+enum UserTaskStatus {
+  STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+model UserTask {
+  id        String   @id @default(cuid()) @map("_id")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  userId String
+
+  task Task @relation(fields: [taskId], references: [id])
+  taskId String
+
+  status UserTaskStatus
+
+  clearedLocations ClearedLocation[]
+
+  @@map("user_active_tasks")
+}
+
+model Task {
+  id        String   @id @default(cuid()) @map("_id")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title String
+  description String
+
+  locations TaskLocation[]
+  userActiveTasks UserTask[]
+
+  @@map("tasks")
+}
+
+model TaskLocation {
+  id        String   @id @default(cuid()) @map("_id")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  placeName String
+  details String
+  latitude Float
+  longitude Float
+
+  task Task @relation(fields: [taskId], references: [id])
+  taskId String
+
+  clearedLocations ClearedLocation[]
+
+  @@map("task_locations")
+}
+
+model ClearedLocation {
+  id        String   @id @default(cuid()) @map("_id")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userTask UserTask @relation(fields: [userTaskId], references: [id])
+  userTaskId String
+
+  taskLocation TaskLocation @relation(fields: [taskLocationId], references: [id])
+  taskLocationId String
+
+  @@map("cleared_locations")
 }

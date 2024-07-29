@@ -4,7 +4,7 @@ import * as cookieParser from 'cookie-parser';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { AccessTGuard } from './common/guards';
 import { ACGuard } from 'nest-access-control';
-import { RBAC_POLICY } from './auth/rbac-policy';
+import { RBAC_POLICY } from './rbac-policy';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

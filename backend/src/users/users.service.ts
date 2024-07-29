@@ -12,6 +12,7 @@ import { AuthenticationService } from 'src/auth/auth.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { roleMetadata } from 'src/auth/enums';
 import { el } from '@faker-js/faker';
+import { TaskDto } from 'src/tasks/dto/task.dto';
 
 @Injectable()
 export class UserService {
@@ -162,6 +163,169 @@ export class UserService {
         }
       }
     }
+  }
+
+  async getUserTasks(userId: string, page: number, perPage: number) {
+    const activatedTasks = await this.prisma.userTask.findMany({
+      where: {
+        userId,
+      },
+      select: {
+        taskId: true,
+        status: true,
+        clearedLocations: true,
+      },
+    });
+
+    const paginate = createPaginator({ perPage });
+    let tasks = await paginate<TaskDto, Prisma.TaskFindManyArgs>(
+      this.prisma.task,
+      {
+        where: {},
+        orderBy: {
+          id: 'desc',
+        },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          locations: {
+            select: {
+              id: true,
+              placeName: true,
+              latitude: true,
+              longitude: true,
+            },
+          },
+        },
+      },
+      {
+        page,
+      },
+    );
+
+    // if the tasks is in the array of activatedTasks then inject the activated property
+    tasks.data = tasks.data.map((task) => {
+      // @ts-ignore
+      // activatedTasks includes the task id
+      let activatedTask = activatedTasks.find(
+        // @ts-ignore
+
+        (t) => t.taskId === task.id,
+      );
+
+      if (!activatedTask) {
+        return { ...task, status: 'NOT_STARTED' };
+      }
+
+      task.locations = task.locations.map((location) => {
+        // @ts-ignore
+        let clearedLocation = activatedTask.clearedLocations.find(
+          // @ts-ignore
+          (cl) => cl.locationId === location.id,
+        );
+        return { ...location, cleared: !!clearedLocation };
+      });
+
+      return { ...task, status: activatedTask.status };
+    });
+    return tasks;
+  }
+
+  async startUserTaskById(userId: string, id: string) {
+    const task = await this.prisma.task.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!task) {
+      throw new NotFoundException('Task not found');
+    }
+
+    // check if already started
+    const userTaskExists = await this.prisma.userTask.findFirst({
+      where: {
+        userId,
+        taskId: id,
+      },
+    });
+
+    if (userTaskExists) {
+      throw new BadRequestException('Task already started');
+    }
+
+    const userTask = await this.prisma.userTask.create({
+      data: {
+        task: {
+          connect: {
+            id,
+          },
+        },
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+        status: 'STARTED',
+      },
+    });
+
+    return userTask;
+  }
+
+  async getUserTaskById(userId: string, taskId: string) {
+    const activatedTask = await this.prisma.userTask.findFirst({
+      where: {
+        userId,
+        taskId,
+      },
+      include: {
+        clearedLocations: true,
+        task: {
+          include: {
+            locations: true,
+          },
+        },
+      },
+    });
+
+    console.log(activatedTask);
+
+    if (!activatedTask) {
+      throw new NotFoundException('Task not found');
+    }
+    return activatedTask;
+  }
+
+  async clearLocation(userId: string, taskId: string, locationId: string) {
+    const activatedTask = await this.prisma.userTask.findFirst({
+      where: {
+        userId,
+        taskId,
+      },
+    });
+
+    if (!activatedTask) {
+      throw new NotFoundException('Task not found');
+    }
+
+    const clearedLocation = await this.prisma.clearedLocation.create({
+      data: {
+        taskLocation: {
+          connect: {
+            id: locationId,
+          },
+        },
+        userTask: {
+          connect: {
+            id: activatedTask.id,
+          },
+        },
+      },
+    });
+
+    return clearedLocation;
   }
 
   checkRolePriority(userRole: Role, requiredRole: Role) {

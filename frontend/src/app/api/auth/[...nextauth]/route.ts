@@ -88,6 +88,7 @@ export const authOptions: NextAuthOptions = {
 					});
 
 					if (res.status === 200) {
+						console.log("User signed in");
 						return res.data;
 					}
 				} catch (error) {
@@ -110,6 +111,7 @@ export const authOptions: NextAuthOptions = {
 			return refreshedToken;
 		},
 		async session({ session, token }) {
+			console.log("Session callback");
 			await getSessionData(session, token);
 			return session;
 		},

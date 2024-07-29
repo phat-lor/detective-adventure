@@ -27,3 +27,6 @@
 	-ms-overflow-style: none; /* IE and Edge */
 	scrollbar-width: none; /* Firefox */
 }
+img {
+	border-radius: 0.5rem;
+}

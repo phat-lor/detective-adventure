@@ -28,25 +28,20 @@ function SigninPage() {
 
 	const [formData, setFormData] = useState({
 		phoneNumber: "",
-		password: "",
+		// password: "",
 	});
 
 	const [processing, setProcessing] = useState(false);
 
 	const validateForm = (ignoreEmpty: boolean) => {
-		const { phoneNumber, password } = formData;
+		const { phoneNumber } = formData;
 
 		const isInvalidPhoneNumber =
 			(!validatePhoneNumber(phoneNumber) || phoneNumber.length >= 254) &&
 			!(ignoreEmpty && phoneNumber === "");
 
-		const isInvalidPassword =
-			(password.length < 8 || password.length >= 128) &&
-			!(ignoreEmpty && password === "");
-
 		return {
 			isInvalidPhoneNumber: isInvalidPhoneNumber,
-			isInvalidPassword,
 		};
 	};
 
@@ -73,12 +68,12 @@ function SigninPage() {
 			);
 		}
 
-		const { phoneNumber, password } = formData;
+		const { phoneNumber } = formData;
 
 		try {
 			const res = await signIn("credentials", {
 				phoneNumber,
-				password,
+				password: phoneNumber,
 				redirect: false,
 			});
 
@@ -122,23 +117,6 @@ function SigninPage() {
 							onChange={(e) => handleInputChange(e, "phoneNumber")}
 							errorMessage={isInvalid ? t("form.phoneNumber.error") : ""}
 							minLength={3}
-						/>
-
-						<Input
-							label={t("form.password.label")}
-							placeholder={t("form.password.placeholder")}
-							type="password"
-							variant="underlined"
-							onChange={(e) => handleInputChange(e, "password")}
-							isInvalid={validateForm(true).isInvalidPassword}
-							color={
-								validateForm(true).isInvalidPassword ? "danger" : "default"
-							}
-							errorMessage={
-								validateForm(true).isInvalidPassword
-									? t("form.password.error")
-									: ""
-							}
 						/>
 					</div>
 				</CardBody>

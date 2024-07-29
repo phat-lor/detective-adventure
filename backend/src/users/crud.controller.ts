@@ -16,34 +16,11 @@ import { UpdateUserDto, UserDto } from './dto';
 import { createPaginator } from 'prisma-pagination';
 import { Prisma, Role, User } from '@prisma/client';
 import { ApiPaginatedResponse } from 'src/common/decorators/pagination.decorator';
+import { TaskDto } from 'src/tasks/dto/task.dto';
 
 @Controller('users')
-export class UserController {
+export class UserCrudController {
   constructor(private readonly userService: UserService) {}
-
-  @UseRoles({
-    resource: 'profile',
-    action: 'read',
-    possession: 'own',
-  })
-  @Get('/me')
-  getCurrentUserInfo(@GetCurrentUserId() userId: string) {
-    return this.userService.getUserInfo(userId);
-  }
-
-  @Patch('/me')
-  @UseRoles({
-    resource: 'profile',
-    action: 'update',
-    possession: 'own',
-  })
-  updateCurrentUser(
-    @GetCurrentUserId() userId: string,
-    @Body() body: UpdateUserDto,
-    @GetCurrentUser('roles') role: Role,
-  ) {
-    return this.userService.updateUser(userId, body, role);
-  }
 
   @UseRoles({
     resource: 'profile',

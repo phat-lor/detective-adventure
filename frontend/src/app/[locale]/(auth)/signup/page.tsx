@@ -20,33 +20,24 @@ function SignupPage() {
 	const _t = useTranslations();
 
 	const [formData, setFormData] = useState({
-		username: "",
+		// username: "",
 		phoneNumber: "",
-		password: "",
-		confirmPassword: "",
+		// password: "",
+		// confirmPassword: "",
 	});
 
 	const [processing, setProcessing] = useState(false);
 
 	const validateForm = (ignoreEmpty: boolean) => {
-		const { username, phoneNumber, password, confirmPassword } = formData;
+		// const { username, phoneNumber, password, confirmPassword } = formData;
+		const { phoneNumber } = formData;
 
-		const isInvalidName =
-			(username.length < 3 || username.length >= 128) &&
-			!(ignoreEmpty && username === "");
 		const isInvalidPhoneNumber =
 			(!validatePhoneNumber(phoneNumber) || phoneNumber.length >= 254) &&
 			!(ignoreEmpty && phoneNumber === "");
-		const isInvalidPassword =
-			(password.length < 8 || password.length >= 128) &&
-			!(ignoreEmpty && password === "");
-		const isInvalidConfirmPassword = password !== confirmPassword;
 
 		return {
-			isInvalidName,
 			isInvalidPhoneNumber,
-			isInvalidPassword,
-			isInvalidConfirmPassword,
 		};
 	};
 
@@ -73,10 +64,10 @@ function SignupPage() {
 		// 	);
 		// }
 
-		const { username, phoneNumber, password } = formData;
+		const { phoneNumber } = formData;
 
 		try {
-			const req = signUp({ username, phoneNumber, password });
+			const req = signUp({ phoneNumber });
 			const res = await req;
 			if (res.ok) {
 				toast.success(t("form.success"));
@@ -108,18 +99,6 @@ function SignupPage() {
 				<CardBody>
 					<div className="flex flex-col gap-4">
 						<Input
-							label={t("form.name.label")}
-							placeholder={t("form.name.placeholder")}
-							variant="underlined"
-							isInvalid={validateForm(true).isInvalidName}
-							color={validateForm(true).isInvalidName ? "danger" : "default"}
-							onChange={(e) => handleInputChange(e, "username")}
-							errorMessage={
-								validateForm(true).isInvalidName ? t("form.name.error") : ""
-							}
-							minLength={3}
-						/>
-						<Input
 							label={t("form.phoneNumber.label")}
 							placeholder={t("form.phoneNumber.placeholder")}
 							variant="underlined"
@@ -130,40 +109,6 @@ function SignupPage() {
 								isInvalidPhoneNumber ? t("form.phoneNumber.error") : ""
 							}
 							minLength={3}
-						/>
-						<Input
-							label={t("form.password.label")}
-							placeholder={t("form.password.placeholder")}
-							type="password"
-							variant="underlined"
-							onChange={(e) => handleInputChange(e, "password")}
-							isInvalid={validateForm(true).isInvalidPassword}
-							color={
-								validateForm(true).isInvalidPassword ? "danger" : "default"
-							}
-							errorMessage={
-								validateForm(true).isInvalidPassword
-									? t("form.password.error")
-									: ""
-							}
-						/>
-						<Input
-							label={t("form.confirmPassword.label")}
-							placeholder={t("form.confirmPassword.placeholder")}
-							type="password"
-							variant="underlined"
-							onChange={(e) => handleInputChange(e, "confirmPassword")}
-							isInvalid={validateForm(true).isInvalidConfirmPassword}
-							color={
-								validateForm(true).isInvalidConfirmPassword
-									? "danger"
-									: "default"
-							}
-							errorMessage={
-								validateForm(true).isInvalidConfirmPassword
-									? t("form.confirmPassword.error")
-									: ""
-							}
 						/>
 					</div>
 				</CardBody>

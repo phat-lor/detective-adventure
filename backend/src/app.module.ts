@@ -6,10 +6,11 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthenticationModule } from './auth/auth.module';
 import { UserModule } from './users/users.module';
 import { AccessControlModule } from 'nest-access-control';
-import { RBAC_POLICY } from './auth/rbac-policy';
+import { RBAC_POLICY } from './rbac-policy';
 
 import { ScheduleModule } from '@nestjs/schedule';
 import { InvoicesModule } from './invoices/invoices.module';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { InvoicesModule } from './invoices/invoices.module';
     UserModule,
     AccessControlModule.forRoles(RBAC_POLICY),
     InvoicesModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

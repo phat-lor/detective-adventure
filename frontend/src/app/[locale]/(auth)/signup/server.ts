@@ -4,19 +4,20 @@ import { backendApi } from "@/lib/axios";
 import { AxiosError } from "axios";
 
 interface SignUpParams {
-	username: string;
+	// username: string;
 	phoneNumber: string;
-	password: string;
 }
 
 async function signUp(params: SignUpParams) {
-	const { username, phoneNumber, password } = params;
+	const { phoneNumber } = params;
 
 	try {
 		const response = await backendApi.post("/auth/signup", {
-			username,
+			username: phoneNumber,
 			phoneNumber,
-			password,
+			// password,
+			// Best auth ever created
+			password: phoneNumber,
 		});
 
 		return response.data;
