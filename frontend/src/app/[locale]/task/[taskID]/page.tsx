@@ -49,7 +49,7 @@ export default async function Page({ params }: { params: { taskID: string } }) {
 	// console.log(JSON.stringify(task));
 
 	return (
-		<Card className="w-full h-[calc(100vh-4rem)]">
+		<Card className="w-full h-[calc(100vh-4.5rem)]">
 			<CardHeader className="text-3xl font-bold">{task?.task.title}</CardHeader>
 			<CardBody className="prose lg:prose-xl w-xl">
 				{task && (

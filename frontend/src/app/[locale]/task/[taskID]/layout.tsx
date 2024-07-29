@@ -11,7 +11,7 @@ export default function AuthLayout({
 
 	return (
 		<NextIntlClientProvider messages={pick(messages, ["common", "landing"])}>
-			<MaxWidthWrapper className="flex w-full  flex-col min-h-screen justify-center">
+			<MaxWidthWrapper className="flex w-full  flex-col min-h-screen lg:justify-center mt-3">
 				{children}
 			</MaxWidthWrapper>
 		</NextIntlClientProvider>
