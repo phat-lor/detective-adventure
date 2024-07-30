@@ -165,7 +165,7 @@ function LandingPage() {
 	return (
 		<main>
 			<div className="flex gap-5 items-center justify-center mt-10 flex-col">
-				<h1 className="text-4xl font-semibold text-center">📌Objectives</h1>
+				<h1 className="text-4xl font-semibold text-center">📌Tasks</h1>
 				{/* loading skelition */}
 				{!data?.data && (
 					<Spinner size="lg" className="mt-10" label="Hang tight" />

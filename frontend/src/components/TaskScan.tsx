@@ -21,7 +21,13 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export default function TaskScan({ task }: { task: TaskInstance }) {
+export default function TaskScan({
+	task,
+	curLocationID,
+}: {
+	task: TaskInstance;
+	curLocationID: string;
+}) {
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 	const urlPath = usePathname();
 	const router = useRouter();
@@ -35,6 +41,7 @@ export default function TaskScan({ task }: { task: TaskInstance }) {
 
 	const onScanQRCode = async (result: IDetectedBarcode[]) => {
 		setLoading(true);
+
 		const value = result[0].rawValue;
 		// the value is url + ?locationId=locationId get the locationId and ad it to the query
 		try {
@@ -45,6 +52,17 @@ export default function TaskScan({ task }: { task: TaskInstance }) {
 				.get("locationId")
 				?.toString()
 				.replace(/\s/g, "");
+
+			if (locationId !== curLocationID) {
+				toast.error("Wrong Location", {
+					description: "The QR Code scanned is for a different location",
+				});
+
+				onClose();
+				setLoading(false);
+				return;
+			}
+			// check if the location is in the page
 			const verified = await clearLocation(
 				session?.accessToken ?? "",
 				task.task.id,

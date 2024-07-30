@@ -101,7 +101,12 @@ export default async function Page({
 				</ModalBody>
 				<Divider />
 				<ModalFooter className="flex gap-2 items-center ">
-					{task && <TaskScan task={task} />}
+					{task && (
+						<TaskScan
+							task={task}
+							curLocationID={unclearedLocations?.[0]?.id ?? ""}
+						/>
+					)}
 				</ModalFooter>
 			</ModalContent>
 		</Modal>
