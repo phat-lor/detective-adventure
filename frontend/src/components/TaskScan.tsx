@@ -26,7 +26,7 @@ export default function TaskScan({ task }: { task: TaskInstance }) {
 	const urlPath = usePathname();
 	const router = useRouter();
 	const { data: session } = useSession({ required: true });
-
+	const [loading, setLoading] = useState(false);
 	useEffect(() => {
 		if (task.status === "COMPLETED") {
 			onClose();
@@ -35,6 +35,7 @@ export default function TaskScan({ task }: { task: TaskInstance }) {
 	}, [onClose, router, task]);
 
 	const onScanQRCode = async (result: IDetectedBarcode[]) => {
+		setLoading(true);
 		const value = result[0].rawValue;
 		// the value is url + ?locationId=locationId get the locationId and ad it to the query
 		try {
@@ -70,6 +71,7 @@ export default function TaskScan({ task }: { task: TaskInstance }) {
 			console.error(e);
 		}
 		onClose();
+		setLoading(false);
 	};
 	return (
 		<>
@@ -98,7 +100,15 @@ export default function TaskScan({ task }: { task: TaskInstance }) {
 								Scan QR Code
 							</ModalHeader>
 							<ModalBody>
-								<Scanner onScan={(result) => onScanQRCode(result)} />
+								{loading ? (
+									<CircularProgress
+										color="primary"
+										size="lg"
+										label="hang tight..."
+									/>
+								) : (
+									<Scanner onScan={(result) => onScanQRCode(result)} />
+								)}
 							</ModalBody>
 						</>
 					)}
