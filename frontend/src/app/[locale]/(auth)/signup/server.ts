@@ -20,7 +20,7 @@ async function signUp(params: SignUpParams) {
 			password: phoneNumber,
 		});
 
-		return response.data;
+		return { ok: true, data: response.data };
 	} catch (error) {
 		if (error instanceof AxiosError) {
 			return {

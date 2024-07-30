@@ -13,6 +13,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { signUp } from "../signup/server";
 
 function SigninPage() {
 	const { data: session } = useSession();
@@ -81,9 +82,31 @@ function SigninPage() {
 				toast.success(t("form.success"));
 				router.push("/");
 			} else {
-				toast.error(
-					t("form.error").replace("%error%", res?.error || "Unknown")
-				);
+				// toast.error(
+				// 	t("form.error").replace("%error%", res?.error || "Unknown")
+				// );
+				try {
+					const req = await signUp({ phoneNumber });
+					if (req.ok) {
+						const res = await signIn("credentials", {
+							phoneNumber,
+							password: phoneNumber,
+							redirect: false,
+						});
+
+						if (res?.ok) {
+							toast.success(t("form.success"));
+							router.push("/");
+						}
+					} else {
+						toast.error(t("form.error").replace("%error%", req.error));
+					}
+				} catch (e) {
+					if (e instanceof Error) {
+						console.error(e);
+						toast.error(t("form.error").replace("%error%", e.message));
+					}
+				}
 			}
 		} catch (e) {
 			if (e instanceof Error) {
@@ -131,12 +154,12 @@ function SigninPage() {
 						>
 							{t("form.submit")}
 						</Button>
-						<p className="text-sm text-left w-full mt-2">
+						{/* <p className="text-sm text-left w-full mt-2">
 							{t("signup")}{" "}
 							<Link href="/signup" className="text-primary">
 								{_t("signup.title")}
 							</Link>
-						</p>
+						</p> */}
 					</div>
 				</CardFooter>
 			</form>

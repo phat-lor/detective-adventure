@@ -18,6 +18,7 @@ import { getUserTaskById } from "../../server";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { ScanBarcodeIcon } from "lucide-react";
+import TaskScan from "@/components/TaskScan";
 interface Task {
 	id: string;
 	createdAt: string;
@@ -56,7 +57,7 @@ export default async function Page({ params }: { params: { taskID: string } }) {
 
 	return (
 		<Modal
-			className="w-full h-[calc(100vh-4.5rem)]"
+			className="w-full h-[calc(100vh-0.5rem)] max-h-[calc(100vh-1.5rem)]"
 			isOpen={true}
 			scrollBehavior="inside"
 			hideCloseButton
@@ -78,16 +79,7 @@ export default async function Page({ params }: { params: { taskID: string } }) {
 					</div>
 				</ModalBody>
 				<ModalFooter className="flex gap-2 items-center ">
-					<Button fullWidth color="primary" startContent={<ScanBarcodeIcon />}>
-						Scan
-					</Button>
-					<CircularProgress
-						size="lg"
-						value={2}
-						maxValue={7}
-						showValueLabel
-						color="primary"
-					/>
+					{task && <TaskScan task={task} />}
 				</ModalFooter>
 			</ModalContent>
 		</Modal>

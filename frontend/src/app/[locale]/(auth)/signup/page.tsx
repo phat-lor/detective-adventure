@@ -67,13 +67,12 @@ function SignupPage() {
 		const { phoneNumber } = formData;
 
 		try {
-			const req = signUp({ phoneNumber });
-			const res = await req;
-			if (res.ok) {
+			const req = await signUp({ phoneNumber });
+			if (req.ok) {
 				toast.success(t("form.success"));
 				router.push("/signin");
 			} else {
-				toast.error(t("form.error").replace("%error%", res.error));
+				toast.error(t("form.error").replace("%error%", req.error));
 			}
 		} catch (e) {
 			if (e instanceof Error) {
