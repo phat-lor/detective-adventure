@@ -136,10 +136,6 @@ function LandingPage() {
 			case "IN_PROGRESS":
 			case "STARTED":
 				setLoading(true);
-
-				toast.success("Task continued", {
-					description: "Task has been continued",
-				});
 				route.push(`/task/${selectedData?.id}`);
 				break;
 			case "COMPLETED":

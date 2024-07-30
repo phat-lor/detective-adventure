@@ -222,7 +222,7 @@ export class UserService {
         // @ts-ignore
         let clearedLocation = activatedTask.clearedLocations.find(
           // @ts-ignore
-          (cl) => cl.locationId === location.id,
+          (cl) => cl.taskLocationId === location.id,
         );
         return { ...location, cleared: !!clearedLocation };
       });
@@ -310,6 +310,40 @@ export class UserService {
       throw new NotFoundException('Task not found');
     }
 
+    // edit status of task
+    if (activatedTask.status === 'STARTED') {
+      await this.prisma.userTask.update({
+        where: {
+          id: activatedTask.id,
+        },
+        data: {
+          status: 'IN_PROGRESS',
+        },
+      });
+    }
+
+    const taskLocation = await this.prisma.taskLocation.findUnique({
+      where: {
+        id: locationId,
+      },
+    });
+
+    if (!taskLocation) {
+      throw new NotFoundException('Location not found');
+    }
+
+    // check if location is already cleared
+    const clearedLocationExists = await this.prisma.clearedLocation.findFirst({
+      where: {
+        taskLocationId: locationId,
+        userTaskId: activatedTask.id,
+      },
+    });
+
+    if (clearedLocationExists) {
+      throw new BadRequestException('Location already cleared');
+    }
+
     const clearedLocation = await this.prisma.clearedLocation.create({
       data: {
         taskLocation: {
@@ -324,6 +358,30 @@ export class UserService {
         },
       },
     });
+
+    // if created location is the last location, then set task status to COMPLETED
+    const taskLocations = await this.prisma.taskLocation.findMany({
+      where: {
+        taskId,
+      },
+    });
+
+    const clearedLocations = await this.prisma.clearedLocation.findMany({
+      where: {
+        userTaskId: activatedTask.id,
+      },
+    });
+
+    if (clearedLocations.length === taskLocations.length) {
+      await this.prisma.userTask.update({
+        where: {
+          id: activatedTask.id,
+        },
+        data: {
+          status: 'COMPLETED',
+        },
+      });
+    }
 
     return clearedLocation;
   }

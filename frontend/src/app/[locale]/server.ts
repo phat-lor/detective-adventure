@@ -3,6 +3,7 @@
 import { backendApi } from "@/lib/axios";
 import { Task } from "@/types";
 import { TaskInstance } from "./task/[taskID]/page";
+import { AxiosError } from "axios";
 
 export async function getUserTasks(access_token: string) {
 	if (!access_token) {
@@ -52,17 +53,23 @@ export async function clearLocation(
 	if (!access_token) {
 		return;
 	}
+	try {
+		const res = await backendApi.post(
+			`/users/me/tasks/clear`,
+			{
+				taskId: taskId,
+				locationId: locationId,
+			},
+			{
+				headers: { Authorization: `Bearer ${access_token}` },
+			}
+		);
 
-	const res = await backendApi.post(
-		`/users/me/tasks/clear`,
-		{
-			taskId: taskId,
-			locationId: locationId,
-		},
-		{
-			headers: { Authorization: `Bearer ${access_token}` },
+		return { ...res.data, ok: true };
+	} catch (e) {
+		// console.error(e);
+		if (e instanceof AxiosError) {
+			return { ok: false, error: e.response?.data?.message };
 		}
-	);
-
-	return res.data;
+	}
 }
