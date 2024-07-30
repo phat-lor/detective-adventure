@@ -28,8 +28,10 @@ export default function TaskScan({ task }: { task: TaskInstance }) {
 	const { data: session } = useSession({ required: true });
 
 	useEffect(() => {
-		task.status === "COMPLETED" && onClose();
-		router.push("/?done=true");
+		if (task.status === "COMPLETED") {
+			onClose();
+			router.push("/?done=true");
+		}
 	}, [onClose, router, task]);
 
 	const onScanQRCode = async (result: IDetectedBarcode[]) => {
