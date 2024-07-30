@@ -29,7 +29,6 @@ export default function TaskScan({ task }: { task: TaskInstance }) {
 	const [loading, setLoading] = useState(false);
 	useEffect(() => {
 		if (task.status === "COMPLETED") {
-			onClose();
 			router.push("/?done=true");
 		}
 	}, [onClose, router, task]);
@@ -99,13 +98,9 @@ export default function TaskScan({ task }: { task: TaskInstance }) {
 							<ModalHeader className="flex flex-col gap-1">
 								Scan QR Code
 							</ModalHeader>
-							<ModalBody>
+							<ModalBody className="flex items-center justify-center">
 								{loading ? (
-									<CircularProgress
-										color="primary"
-										size="lg"
-										label="hang tight..."
-									/>
+									<CircularProgress color="primary" size="lg" />
 								) : (
 									<Scanner onScan={(result) => onScanQRCode(result)} />
 								)}
