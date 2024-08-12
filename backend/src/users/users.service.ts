@@ -172,7 +172,6 @@ export class UserService {
       },
       select: {
         taskId: true,
-        status: true,
         clearedLocations: true,
       },
     });
@@ -227,7 +226,7 @@ export class UserService {
         return { ...location, cleared: !!clearedLocation };
       });
 
-      return { ...task, status: activatedTask.status };
+      return task;
     });
     return tasks;
   }
@@ -267,7 +266,6 @@ export class UserService {
             id: userId,
           },
         },
-        status: 'STARTED',
       },
     });
 
@@ -308,18 +306,6 @@ export class UserService {
 
     if (!activatedTask) {
       throw new NotFoundException('Task not found');
-    }
-
-    // edit status of task
-    if (activatedTask.status === 'STARTED') {
-      await this.prisma.userTask.update({
-        where: {
-          id: activatedTask.id,
-        },
-        data: {
-          status: 'IN_PROGRESS',
-        },
-      });
     }
 
     const taskLocation = await this.prisma.taskLocation.findUnique({
@@ -371,17 +357,6 @@ export class UserService {
         userTaskId: activatedTask.id,
       },
     });
-
-    if (clearedLocations.length === taskLocations.length) {
-      await this.prisma.userTask.update({
-        where: {
-          id: activatedTask.id,
-        },
-        data: {
-          status: 'COMPLETED',
-        },
-      });
-    }
 
     return clearedLocation;
   }

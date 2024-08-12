@@ -37,10 +37,8 @@ import {
 import { toast } from "sonner";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 
-import "leaflet/dist/leaflet.css";
-import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css";
-import "leaflet-defaulticon-compatibility";
 import { useRouter } from "@/lib/navigation";
+import Map from "./Map";
 function LandingPage() {
 	const t = useTranslations("landing");
 	const strings = t("description_type", { returnObjects: true }).split(",");
@@ -64,11 +62,18 @@ function LandingPage() {
 			const value = task.locations.filter(
 				(location) => location.cleared
 			).length;
+
+			const status =
+				value === 0
+					? "NOT_STARTED"
+					: value === maxValue
+					? "COMPLETED"
+					: "IN_PROGRESS";
 			return {
 				title: task.title,
 				description: task.description,
 				id: task.id,
-				status: task.status,
+				status: status,
 				value: value,
 				maxValue: maxValue,
 				locations: task.locations,
@@ -96,6 +101,8 @@ function LandingPage() {
 			}
 			console.log(task);
 
+			task.status;
+
 			const calculatedCenter = task.locations
 				.reduce(
 					(acc, curr) => {
@@ -113,6 +120,7 @@ function LandingPage() {
 			const longDiff = Math.max(...longitudes) - Math.min(...longitudes);
 			const calculatedZoom = Math.max(latDiff, longDiff);
 
+			console.log(status);
 			setSelectedData({
 				...task,
 				centerDefault: {
@@ -145,19 +153,26 @@ function LandingPage() {
 				break;
 			case "NOT_STARTED":
 				setLoading(true);
-				const res = await startTask(
-					session?.accessToken ?? "",
-					selectedData?.id ?? ""
-				);
-				if (!res) {
-					return toast.error("Task not started", {
-						description: "Task could not be started",
+				try {
+					const res = await startTask(
+						session?.accessToken ?? "",
+						selectedData?.id ?? ""
+					);
+					if (!res) {
+						return toast.error("Task not started", {
+							description: "Task could not be started",
+						});
+					}
+					toast.success("Task started", {
+						description: "Task has been started",
 					});
+					fetchData();
+				} catch (e) {
+				} finally {
+					route.push(`/task/${selectedData?.id}`);
+					// setLoading(false);
 				}
-				toast.success("Task started", {
-					description: "Task has been started",
-				});
-				fetchData();
+
 				break;
 		}
 	};
@@ -248,37 +263,9 @@ function LandingPage() {
 									<div className="flex flex-col gap-1">
 										<p className="text-lg font-semibold">Maps</p>
 										<Card className="h-56 w-full rounded-md">
-											<MapContainer
-												center={[
-													selectedData?.centerDefault?.latitude || 0,
-													selectedData?.centerDefault?.longitude || 0,
-												]}
-												zoom={selectedData?.zoomDefault || 13}
-												// center={[51.505, -0.09]}
-												// calculated center
-												// zoom={13}
-												// calculated zoom
-												scrollWheelZoom={false}
-												style={{ height: "100%", width: "100%" }}
-											>
-												<TileLayer
-													attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-													url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-												/>
-												{/* <Marker position={[51.505, -0.09]}>
-														<Popup>
-															A pretty CSS3 popup. <br /> Easily customizable.
-														</Popup>
-													</Marker> */}
-												{selectedData?.locations.map((location) => (
-													<Marker
-														key={location.id}
-														position={[location.latitude, location.longitude]}
-													>
-														<Popup>{location.placeName}</Popup>
-													</Marker>
-												))}
-											</MapContainer>
+											<Fragment>
+												<Map selectedData={selectedData} />
+											</Fragment>
 										</Card>
 										{/* <Map
 												apiKey="AIzaSyD1yC-YBtXtul0A4q8M_MvStseu6BXU11A"

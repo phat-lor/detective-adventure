@@ -15,7 +15,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 				<Toaster richColors position="top-center" />
 				<NextUIProvider>
-					<NextThemesProvider attribute="class" forcedTheme="light">
+					<NextThemesProvider attribute="class" defaultTheme="light">
 						{children}
 					</NextThemesProvider>
 				</NextUIProvider>

@@ -1,3 +1,4 @@
+import { LandingNavbar } from "@/components/basicnav/NavBar";
 import DoneConfiti from "@/components/DoneConfiti";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { pick } from "lodash";
@@ -11,7 +12,9 @@ export default function AuthLayout({
 	const messages = useMessages();
 
 	return (
-		<NextIntlClientProvider messages={pick(messages, ["common", "landing"])}>
+		<NextIntlClientProvider messages={pick(messages, ["common", "tasks"])}>
+			<LandingNavbar />
+
 			<MaxWidthWrapper className="flex w-full  flex-col min-h-screen">
 				<DoneConfiti />
 				{children}

@@ -30,31 +30,6 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export type Currencies = "USD" | "EUR" | "GBP" | "BDT";
-
-export function formatPrice(
-	price: number | string,
-	options: {
-		currency?: Currencies;
-		notation?: Intl.NumberFormatOptions["notation"];
-	} = {}
-) {
-	const { currency = "USD", notation = "compact" } = options;
-
-	const numericPrice = typeof price === "string" ? parseFloat(price) : price;
-
-	try {
-		return new Intl.NumberFormat("en-US", {
-			style: "currency",
-			currency,
-			notation,
-			maximumFractionDigits: 2,
-		}).format(numericPrice);
-	} catch (e) {
-		return "N/A (Invalid Price)";
-	}
-}
-
 export const validatePhoneNumber = (phoneNumber: string) =>
 	// ^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$
 	phoneNumber.match("^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$");

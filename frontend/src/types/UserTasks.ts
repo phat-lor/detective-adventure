@@ -31,7 +31,7 @@ interface Task {
 	id: string;
 	title: string;
 	description: string;
-	status: Status;
+	status?: Status;
 	locations: Location[];
 	value?: number;
 	maxValue?: number;

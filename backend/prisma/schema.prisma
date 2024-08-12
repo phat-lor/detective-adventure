@@ -31,11 +31,7 @@ model User {
   @@map("users")
 }
 
-enum UserTaskStatus {
-  STARTED
-  IN_PROGRESS
-  COMPLETED
-}
+
 
 model UserTask {
   id        String   @id @default(cuid()) @map("_id")
@@ -47,8 +43,6 @@ model UserTask {
 
   task Task @relation(fields: [taskId], references: [id])
   taskId String
-
-  status UserTaskStatus
 
   clearedLocations ClearedLocation[]
 

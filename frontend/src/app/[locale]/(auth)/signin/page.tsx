@@ -122,7 +122,12 @@ function SigninPage() {
 			className="p-3"
 			// classNames={{ base: "bg-transparent border border-default shadow-2xl" }}
 		>
-			<form>
+			<form
+				onSubmit={(e) => {
+					e.preventDefault();
+					handleSubmit();
+				}}
+			>
 				<CardHeader>
 					<div className="flex flex-col gap-2">
 						<h4 className="text-2xl font-bold">{t("title")}</h4>
