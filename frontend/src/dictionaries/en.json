@@ -1,4 +1,26 @@
 {
+	"landing": {
+		"hero": {
+			"chip": "Beta is now live!",
+			"title": "Explore Thailand, One District at a Time",
+			"subtitle": "Discover the hidden gems of Thailand.",
+			"start": "Start Adventure"
+		},
+		"partners": {
+			"title": "Our Partners"
+		},
+		"navbar": {
+			"title": "Detective Adventures",
+			"home": "Home",
+			"features": "Features",
+			"about": "About Us",
+			"contact": "Contact",
+			"docs": "Docs",
+			"signin": "Login",
+			"signup": "Get Started",
+			"dashboard": "App"
+		}
+	},
 	"tasks": {
 		"navbar": {
 			"title": "Detective Adventures"

@@ -21,7 +21,7 @@ function SigninPage() {
 
 	useEffect(() => {
 		if (session) {
-			router.push("/");
+			router.push("/app");
 		}
 	}, [router, session]);
 	const t = useTranslations("signin");
@@ -80,7 +80,7 @@ function SigninPage() {
 
 			if (res?.ok) {
 				toast.success(t("form.success"));
-				router.push("/");
+				router.push("/app");
 			} else {
 				// toast.error(
 				// 	t("form.error").replace("%error%", res?.error || "Unknown")
@@ -96,7 +96,7 @@ function SigninPage() {
 
 						if (res?.ok) {
 							toast.success(t("form.success"));
-							router.push("/");
+							router.push("/app");
 						}
 					} else {
 						toast.error(t("form.error").replace("%error%", req.error));

@@ -73,3 +73,9 @@ export async function clearLocation(
 		}
 	}
 }
+
+export async function fetchTasks() {
+	const res = await backendApi.get("/tasks?perPage=3");
+
+	return res.data.data as Task[];
+}

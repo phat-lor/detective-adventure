@@ -14,19 +14,20 @@ import { ApiPaginatedResponse } from 'src/common/decorators/pagination.decorator
 import { TaskDto } from './dto/task.dto';
 import { UpdateUserDto } from 'src/users/dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { GetCurrentUserId } from 'src/common/decorators';
+import { GetCurrentUserId, Public } from 'src/common/decorators';
 
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
-  @UseRoles({
-    resource: 'tasks',
-    action: 'read',
-    possession: 'any',
-  })
+  // @UseRoles({
+  //   resource: 'tasks',
+  //   action: 'read',
+  //   possession: 'any',
+  // })
   @Get()
   @ApiPaginatedResponse(TaskDto)
+  @Public()
   getAllTasks(
     @Query('page') page: number = 1,
     @Query('perPage') perPage: number = 10,

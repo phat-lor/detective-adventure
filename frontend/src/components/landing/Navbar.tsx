@@ -20,18 +20,21 @@ import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "@/lib/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import DashNavAvatar from "./NavAvatar";
+import DashNavAvatar from "../basicnav/NavAvatar";
 
-// const menuItems = [
+const menuItems = [
+	{ title: "home", href: "/" },
+	{ title: "features", href: "/features" },
+	{ title: "about", href: "/about" },
+	{ title: "docs", isExternal: true, href: "/docs" },
+];
 
-// ];
-
-export function AppNavbar(props: NavbarProps) {
+export function LandingNavbar(props: NavbarProps) {
 	const router = useRouter();
 	const pathname = usePathname();
 	const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 	const { data: session } = useSession();
-	const t = useTranslations("tasks.navbar");
+	const t = useTranslations("landing.navbar");
 
 	return (
 		<Navbar
@@ -45,7 +48,6 @@ export function AppNavbar(props: NavbarProps) {
 			}}
 			height="60px"
 			isMenuOpen={isMenuOpen}
-			maxWidth="xl"
 			onMenuOpenChange={setIsMenuOpen}
 		>
 			{/* Left Content */}
@@ -58,7 +60,7 @@ export function AppNavbar(props: NavbarProps) {
 
 			{/* Center Content */}
 			<NavbarContent justify="center">
-				{/* {menuItems.map((item, index) => (
+				{menuItems.map((item, index) => (
 					<NavbarItem key={`${item.title}-${index}`}>
 						<Link
 							aria-current={pathname === item.href ? "page" : undefined}
@@ -74,17 +76,48 @@ export function AppNavbar(props: NavbarProps) {
 							{t(item.title)}
 						</Link>
 					</NavbarItem>
-				))} */}
+				))}
 			</NavbarContent>
 
 			{/* Right Content */}
 			<NavbarContent className="hidden md:flex" justify="end">
-				{session && session.user && (
+				{session && session.user ? (
 					<>
 						<NavbarItem className="ml-2 !flex gap-2">
 							<DashNavAvatar />
+							<Button
+								className="bg-foreground font-medium text-background"
+								color="secondary"
+								endContent={<Icon icon="solar:alt-arrow-right-linear" />}
+								radius="full"
+								variant="flat"
+								onClick={() => router.push("/dashboard")}
+							>
+								{t("dashboard")}
+							</Button>
 						</NavbarItem>
 					</>
+				) : (
+					<NavbarItem className="ml-2 !flex gap-2">
+						<Button
+							className="text-default-500"
+							radius="full"
+							variant="light"
+							onClick={() => router.push("/signin")}
+						>
+							{t("signin")}
+						</Button>
+						<Button
+							className="bg-foreground font-medium text-background"
+							color="secondary"
+							endContent={<Icon icon="solar:alt-arrow-right-linear" />}
+							radius="full"
+							variant="flat"
+							onClick={() => router.push("/signin")}
+						>
+							{t("signup")}
+						</Button>
+					</NavbarItem>
 				)}
 			</NavbarContent>
 
@@ -105,7 +138,14 @@ export function AppNavbar(props: NavbarProps) {
 				{session && session.user ? (
 					<>
 						<NavbarMenuItem className="mb-4">
-							<DashNavAvatar userComponent />
+							<Button
+								fullWidth
+								as={Link}
+								className="bg-foreground text-background"
+								href="/app"
+							>
+								{t("dashboard")}
+							</Button>
 						</NavbarMenuItem>
 					</>
 				) : (
@@ -120,14 +160,14 @@ export function AppNavbar(props: NavbarProps) {
 								fullWidth
 								as={Link}
 								className="bg-foreground text-background"
-								href="/signup"
+								href="/signin"
 							>
 								{t("signup")}
 							</Button>
 						</NavbarMenuItem>
 					</>
 				)}
-				{/* {menuItems.map((item, index) => (
+				{menuItems.map((item, index) => (
 					<NavbarMenuItem key={`${item.title}-${index}`}>
 						<Link
 							className="mb-2 w-full text-default-500"
@@ -139,7 +179,7 @@ export function AppNavbar(props: NavbarProps) {
 						</Link>
 						{index < menuItems.length - 1 && <Divider className="opacity-50" />}
 					</NavbarMenuItem>
-				))} */}
+				))}
 			</NavbarMenu>
 		</Navbar>
 	);
