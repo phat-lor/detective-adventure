@@ -7,6 +7,7 @@ import { AxiosError } from "axios";
 import translate from "translate";
 
 translate.key = process.env.TRANSLATE_KEY;
+const writeLang = "th";
 
 export async function getUserTasks(
 	access_token: string,
@@ -99,17 +100,19 @@ export async function clearLocation(
 
 export async function fetchTasks(locale: string = "en") {
 	const res = await backendApi.get("/tasks?perPage=3");
-
 	const processed = await Promise.all(
 		res.data.data.map(async (task: Task) => {
 			const translated = await translate(task.title, {
+				from: writeLang,
 				to: locale,
 			});
 
 			const description = await translate(task.description, {
+				from: writeLang,
 				to: locale,
 			});
 
+			console.log(translated, description);
 			return { ...task, title: translated, description: description };
 		})
 	);
