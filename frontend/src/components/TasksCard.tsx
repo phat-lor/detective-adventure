@@ -71,8 +71,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
 		</CardHeader>
 		<CardBody>
 			{
-				// @ts-ignore
-				<ReactMarkdown rehypePlugins={[rehypeRaw]}>{description}</ReactMarkdown>
+				// <ReactMarkdown rehypePlugins={[rehypeRaw]}>{description}</ReactMarkdown>
+				description.split(" ").slice(0, 10).join(" ") + "..."
 			}
 		</CardBody>
 		<CardFooter className="justify-between">

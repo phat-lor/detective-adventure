@@ -246,8 +246,10 @@ function LandingPage() {
 										<p className="text-lg font-semibold">Thumbnail</p>
 										<Image
 											alt={selectedData?.title}
-											isLoading={loading}
-											src={selectedData?.thumbnails?.[0] ?? ""}
+											src={
+												selectedData?.thumbnails?.[0] ??
+												"https://placehold.co/600x400"
+											}
 											width={600}
 											height={400}
 										/>
