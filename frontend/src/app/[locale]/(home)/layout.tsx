@@ -13,7 +13,9 @@ export default function AuthLayout({
 	const messages = useMessages();
 
 	return (
-		<NextIntlClientProvider messages={pick(messages, ["common", "landing"])}>
+		<NextIntlClientProvider
+			messages={pick(messages, ["common", "landing", "locale"])}
+		>
 			{/* <AppNavbar /> */}
 			<LandingNavbar />
 

@@ -23,6 +23,7 @@ export class TasksService {
           id: true,
           title: true,
           description: true,
+          thumbnails: true,
           locations: {
             select: {
               placeName: true,
@@ -42,6 +43,7 @@ export class TasksService {
       data: {
         title: data.title,
         description: data.description,
+        thumbnails: data.thumbnails,
         locations: {
           create: data.locations,
         },
@@ -97,6 +99,7 @@ export class TasksService {
       data: {
         title: data.title,
         description: data.description,
+        thumbnails: data.thumbnails,
         locations: {
           create: data.locations,
         },

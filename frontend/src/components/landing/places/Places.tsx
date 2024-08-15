@@ -8,18 +8,29 @@ import PlaceListItem from "./place-list-item";
 import { Task } from "@/types";
 import { fetchTasks } from "@/app/[locale]/server";
 import { SearchIcon } from "lucide-react";
+import { usePathname as useRawPathname } from "next/navigation";
+import { toast } from "sonner";
+import { useTranslations } from "next-intl";
+import { Link } from "@/lib/navigation";
 
 export default function PlacesList({ className }: { className?: string }) {
 	const [isLoading, setIsLoading] = React.useState(true);
 	const [places, setPlaces] = React.useState<Task[]>([]);
+	const rawPathname = useRawPathname();
+
+	const t = useTranslations("landing");
 	useEffect(() => {
 		const fetchPlaces = async () => {
 			try {
-				const res = await fetchTasks();
+				const locale = rawPathname.split("/")[1];
+				if (!locale)
+					return toast.error("Locale not found", {
+						description: "Locale not found",
+					});
+				const res = await fetchTasks(locale);
 				console.log(res);
 				setPlaces(res);
 				setIsLoading(false);
-				console.log(places);
 			} catch (err) {
 				console.error(err);
 			}
@@ -31,9 +42,9 @@ export default function PlacesList({ className }: { className?: string }) {
 		<div className="my-auto flex h-full w-full max-w-7xl flex-col gap-2 p-4">
 			<div className="py-4 flex justify-center flex-col items-center">
 				<h2 className="text-2xl font-light tracking-tighter sm:text-3xl bg-gradient-to-b from-foreground to-foreground/70 text-transparent bg-clip-text text-pretty">
-					Trips
+					{t("places.title")}
 				</h2>
-				<p className="text-gray-500">Here are some of the trips</p>
+				<p className="text-gray-500">{t("places.subtitle")}</p>
 			</div>
 			<div
 				className={cn(
@@ -42,11 +53,15 @@ export default function PlacesList({ className }: { className?: string }) {
 				)}
 			>
 				{places.map((place) => (
-					<PlaceListItem key={place.id} {...place} isLoading />
+					<PlaceListItem key={place.id} {...place} isLoading={isLoading} />
 				))}
 			</div>
 			<div className="flex justify-center items-center">
-				<Button startContent={<SearchIcon />}>Explore More</Button>
+				{/* <Button startContent={<SearchIcon />}>{t("places.explore")}</Button> */}
+				<Link href={`/app`} className="underline flex flex-row items-center">
+					<SearchIcon className="mr-1" size={20} />
+					{t("places.explore")}
+				</Link>
 			</div>
 		</div>
 	);

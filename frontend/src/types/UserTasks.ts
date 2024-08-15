@@ -37,12 +37,14 @@ interface Task {
 	maxValue?: number;
 	centerDefault?: Location;
 	zoomDefault?: number;
+	thumbnails?: string[];
 	createdAt: string;
 	updatedAt: string;
 }
 
 interface Location {
 	id: string;
+	thumbnails?: string[];
 	placeName: string;
 	latitude: number;
 	longitude: number;

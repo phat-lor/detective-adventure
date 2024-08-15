@@ -188,10 +188,12 @@ export class UserService {
           id: true,
           title: true,
           description: true,
+          thumbnails: true,
           locations: {
             select: {
               id: true,
               placeName: true,
+              thumbnails: true,
               latitude: true,
               longitude: true,
             },
@@ -342,19 +344,6 @@ export class UserService {
             id: activatedTask.id,
           },
         },
-      },
-    });
-
-    // if created location is the last location, then set task status to COMPLETED
-    const taskLocations = await this.prisma.taskLocation.findMany({
-      where: {
-        taskId,
-      },
-    });
-
-    const clearedLocations = await this.prisma.clearedLocation.findMany({
-      where: {
-        userTaskId: activatedTask.id,
       },
     });
 

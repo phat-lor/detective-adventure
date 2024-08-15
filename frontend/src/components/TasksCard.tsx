@@ -7,6 +7,7 @@ import {
 	Chip,
 	CircularProgress,
 	Button,
+	Image,
 } from "@nextui-org/react";
 import {
 	CheckIcon,
@@ -36,6 +37,7 @@ const STATUS_INFO: Record<Status, { icon: JSX.Element; color: Color }> = {
 interface TaskCardProps {
 	title: string;
 	description: string;
+	thumbnail: string;
 	id: string;
 	status: Status;
 	value: number;
@@ -46,6 +48,7 @@ interface TaskCardProps {
 const TaskCard: React.FC<TaskCardProps> = ({
 	title,
 	description,
+	thumbnail,
 	id,
 	status,
 	value,
@@ -53,6 +56,13 @@ const TaskCard: React.FC<TaskCardProps> = ({
 	setSelected,
 }) => (
 	<Card fullWidth>
+		<Image
+			src={thumbnail}
+			alt={title}
+			className="rounded-none"
+			width={600}
+			height={400}
+		/>
 		<CardHeader className="flex justify-between">
 			<p className="font-semibold text-xl">{title}</p>
 			<Chip color={STATUS_INFO[status].color} className="text-white">

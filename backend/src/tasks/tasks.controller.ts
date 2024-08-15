@@ -7,6 +7,10 @@ import {
   Patch,
   Post,
   Query,
+  Request,
+  Res,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { UseRoles } from 'nest-access-control';
@@ -15,6 +19,26 @@ import { TaskDto } from './dto/task.dto';
 import { UpdateUserDto } from 'src/users/dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { GetCurrentUserId, Public } from 'src/common/decorators';
+import { diskStorage } from 'multer';
+import path = require('path');
+import { v4 as uuidv4 } from 'uuid';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Image } from './model/Image.interface';
+import { Observable, of } from 'rxjs';
+import { join } from 'path';
+
+export const storage = {
+  storage: diskStorage({
+    destination: './uploads/tasks-thumbnails',
+    filename: (req, file, cb) => {
+      const filename: string =
+        path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
+      const extension: string = path.parse(file.originalname).ext;
+
+      cb(null, `${filename}${extension}`);
+    },
+  }),
+};
 
 @Controller('tasks')
 export class TasksController {
@@ -73,5 +97,26 @@ export class TasksController {
   @Patch(':id')
   updateTask(@Param('id') id: string, @Body() data: UpdateTaskDto) {
     return this.tasksService.updateTask(id, data);
+  }
+
+  @UseRoles({
+    resource: 'tasks',
+    action: 'update',
+    possession: 'any',
+  })
+  @Post('image/upload')
+  @UseInterceptors(FileInterceptor('file', storage))
+  uploadFile(@UploadedFile() file, @Request() req): Observable<Image> {
+    return of(file);
+  }
+
+  @Public()
+  @Get('image/:imagename')
+  findImage(@Param('imagename') imagename, @Res() res): Observable<Object> {
+    return of(
+      res.sendFile(
+        join(process.cwd(), 'uploads/tasks-thumbnails/' + imagename),
+      ),
+    );
   }
 }

@@ -4,10 +4,13 @@ import {
   IsLongitude,
   IsNotEmpty,
   IsString,
+  isURL,
   ValidateNested,
 } from 'class-validator';
 
 export class TaskDto {
+  @IsNotEmpty()
+  thumbnails: string[];
   @IsString()
   @IsNotEmpty()
   title: string;
@@ -21,6 +24,8 @@ export class TaskDto {
 }
 
 class LocationDto {
+  @IsNotEmpty()
+  thumbnails: string[];
   @IsString()
   placeName: string;
   @IsString()

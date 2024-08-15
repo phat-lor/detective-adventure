@@ -12,7 +12,9 @@ export default function AuthLayout({
 	const messages = useMessages();
 
 	return (
-		<NextIntlClientProvider messages={pick(messages, ["common", "tasks"])}>
+		<NextIntlClientProvider
+			messages={pick(messages, ["common", "tasks", "locale"])}
+		>
 			<AppNavbar />
 
 			<MaxWidthWrapper className="flex w-full  flex-col min-h-screen">

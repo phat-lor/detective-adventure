@@ -21,6 +21,8 @@ import { usePathname, useRouter } from "@/lib/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import DashNavAvatar from "./NavAvatar";
+import LangugeSwitcher from "../locale/LangSwitcher";
+import { Role } from "@/types";
 
 // const menuItems = [
 
@@ -82,6 +84,8 @@ export function AppNavbar(props: NavbarProps) {
 				{session && session.user && (
 					<>
 						<NavbarItem className="ml-2 !flex gap-2">
+							<LangugeSwitcher />
+
 							<DashNavAvatar />
 						</NavbarItem>
 					</>
@@ -106,6 +110,9 @@ export function AppNavbar(props: NavbarProps) {
 					<>
 						<NavbarMenuItem className="mb-4">
 							<DashNavAvatar userComponent />
+						</NavbarMenuItem>
+						<NavbarMenuItem>
+							<LangugeSwitcher />
 						</NavbarMenuItem>
 					</>
 				) : (

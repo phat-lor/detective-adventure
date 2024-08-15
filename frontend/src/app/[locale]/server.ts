@@ -4,8 +4,14 @@ import { backendApi } from "@/lib/axios";
 import { Task } from "@/types";
 import { TaskInstance } from "./task/[taskID]/page";
 import { AxiosError } from "axios";
+import translate from "translate";
 
-export async function getUserTasks(access_token: string) {
+translate.key = process.env.TRANSLATE_KEY;
+
+export async function getUserTasks(
+	access_token: string,
+	locale: string = "en"
+) {
 	if (!access_token) {
 		return;
 	}
@@ -14,7 +20,24 @@ export async function getUserTasks(access_token: string) {
 		headers: { Authorization: `Bearer ${access_token}` },
 	});
 
-	return res.data;
+	const processed = await Promise.all(
+		res.data.data.map(async (task: Task) => {
+			const translated = await translate(task.title, {
+				to: locale,
+			});
+
+			const description = await translate(task.description, {
+				to: locale,
+			});
+
+			return { ...task, title: translated, description: description };
+		})
+	);
+
+	return {
+		meta: res.data.meta,
+		data: processed,
+	};
 }
 
 export async function getUserTaskById(access_token: string, id: string) {
@@ -74,8 +97,22 @@ export async function clearLocation(
 	}
 }
 
-export async function fetchTasks() {
+export async function fetchTasks(locale: string = "en") {
 	const res = await backendApi.get("/tasks?perPage=3");
 
-	return res.data.data as Task[];
+	const processed = await Promise.all(
+		res.data.data.map(async (task: Task) => {
+			const translated = await translate(task.title, {
+				to: locale,
+			});
+
+			const description = await translate(task.description, {
+				to: locale,
+			});
+
+			return { ...task, title: translated, description: description };
+		})
+	);
+	console.log(processed);
+	return processed as Task[];
 }

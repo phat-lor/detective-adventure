@@ -7,7 +7,7 @@
 			"start": "Start Adventure"
 		},
 		"partners": {
-			"title": "Our Partners"
+			"title": "Our Supporters"
 		},
 		"navbar": {
 			"title": "Detective Adventures",
@@ -19,7 +19,13 @@
 			"signin": "Login",
 			"signup": "Get Started",
 			"dashboard": "App"
-		}
+		},
+		"places": {
+			"title": "Trips",
+			"subtitle": "Our curated trips for you to explore",
+			"explore": "Explore Trips"
+		},
+		"madeWith": "Made with ❤️ by Catto"
 	},
 	"tasks": {
 		"navbar": {
@@ -71,5 +77,15 @@
 			"submit": "Sign up"
 		},
 		"signin": "Already have an account?"
+	},
+	"locale": {
+		"en": "English",
+		"th": "ไทย",
+		"confirm": {
+			"title": "เปลี่ยนภาษาเป็น %%lang%%?",
+			"message": "คุณกำลังจะเปลี่ยนภาษาของเว็บไซต์เป็น %%lang%% คุณต้องการดำเนินการต่อหรือไม่?",
+			"confirm": "ใช่",
+			"cancel": "ยกเลิก"
+		}
 	}
 }

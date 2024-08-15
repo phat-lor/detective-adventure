@@ -21,12 +21,13 @@ import { usePathname, useRouter } from "@/lib/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import DashNavAvatar from "../basicnav/NavAvatar";
+import LangugeSwitcher from "../locale/LangSwitcher";
 
 const menuItems = [
 	{ title: "home", href: "/" },
-	{ title: "features", href: "/features" },
-	{ title: "about", href: "/about" },
-	{ title: "docs", isExternal: true, href: "/docs" },
+	// { title: "features", href: "/features" },
+	// { title: "about", href: "/about" },
+	// { title: "docs", isExternal: true, href: "/docs" },
 ];
 
 export function LandingNavbar(props: NavbarProps) {
@@ -58,7 +59,7 @@ export function LandingNavbar(props: NavbarProps) {
 				<span className="font-medium">{t("title")}</span>
 			</NavbarBrand>
 
-			{/* Center Content */}
+			{/* Center Content
 			<NavbarContent justify="center">
 				{menuItems.map((item, index) => (
 					<NavbarItem key={`${item.title}-${index}`}>
@@ -77,13 +78,13 @@ export function LandingNavbar(props: NavbarProps) {
 						</Link>
 					</NavbarItem>
 				))}
-			</NavbarContent>
-
+			</NavbarContent> */}
 			{/* Right Content */}
 			<NavbarContent className="hidden md:flex" justify="end">
 				{session && session.user ? (
 					<>
 						<NavbarItem className="ml-2 !flex gap-2">
+							<LangugeSwitcher />
 							<DashNavAvatar />
 							<Button
 								className="bg-foreground font-medium text-background"
@@ -91,7 +92,7 @@ export function LandingNavbar(props: NavbarProps) {
 								endContent={<Icon icon="solar:alt-arrow-right-linear" />}
 								radius="full"
 								variant="flat"
-								onClick={() => router.push("/dashboard")}
+								onClick={() => router.push("/app")}
 							>
 								{t("dashboard")}
 							</Button>
@@ -99,6 +100,7 @@ export function LandingNavbar(props: NavbarProps) {
 					</>
 				) : (
 					<NavbarItem className="ml-2 !flex gap-2">
+						<LangugeSwitcher />
 						<Button
 							className="text-default-500"
 							radius="full"
@@ -167,7 +169,7 @@ export function LandingNavbar(props: NavbarProps) {
 						</NavbarMenuItem>
 					</>
 				)}
-				{menuItems.map((item, index) => (
+				{/* {menuItems.map((item, index) => (
 					<NavbarMenuItem key={`${item.title}-${index}`}>
 						<Link
 							className="mb-2 w-full text-default-500"
@@ -179,7 +181,10 @@ export function LandingNavbar(props: NavbarProps) {
 						</Link>
 						{index < menuItems.length - 1 && <Divider className="opacity-50" />}
 					</NavbarMenuItem>
-				))}
+				))} */}
+				<NavbarMenuItem>
+					<LangugeSwitcher />
+				</NavbarMenuItem>
 			</NavbarMenu>
 		</Navbar>
 	);

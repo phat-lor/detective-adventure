@@ -1,4 +1,27 @@
 {
+	"landing": {
+		"hero": {
+			"chip": "เบต้าเปิดให้ใช้งานแล้ว!",
+			"title": "สำรวจ ประเทศไทย ทีละเขต",
+			"subtitle": "ค้นพบสถานที่ที่ซ่อนอยู่ในประเทศไทย",
+			"start": "เริ่มการผจญภัย"
+		},
+		"partners": {
+			"title": "ผู้สนับสนุนของเรา"
+		},
+		"navbar": {
+			"title": "การผจญภัยนักสืบ",
+			"home": "หน้าหลัก",
+			"features": "คุณสมบัติ",
+			"about": "เกี่ยวกับเรา",
+			"contact": "ติดต่อ",
+			"docs": "เอกสาร",
+			"signin": "เข้าสู่ระบบ",
+			"signup": "เริ่มต้นใช้งาน",
+			"dashboard": "แอป"
+		},
+		"madeWith": "ทำด้วย ❤️ โดย Catto"
+	},
 	"tasks": {
 		"navbar": {
 			"title": "นักสืบผจญภัย"
@@ -48,5 +71,15 @@
 			"submit": "ลงทะเบียน"
 		},
 		"signin": "มีบัญชีอยู่แล้ว?"
+	},
+	"locale": {
+		"en": "English",
+		"th": "ไทย",
+		"confirm": {
+			"title": "Change language to %%lang%%?",
+			"message": "You are about to change the language of the website to %%lang%%. Do you want to proceed?",
+			"confirm": "Yes",
+			"cancel": "Cancel"
+		}
 	}
 }
