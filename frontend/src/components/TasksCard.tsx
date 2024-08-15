@@ -59,7 +59,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
 		<Image
 			src={thumbnail}
 			alt={title}
-			className="rounded-none"
+			className="rounded-none object-cover max-h-60"
 			width={600}
 			height={400}
 		/>
@@ -71,8 +71,14 @@ const TaskCard: React.FC<TaskCardProps> = ({
 		</CardHeader>
 		<CardBody>
 			{
-				// <ReactMarkdown rehypePlugins={[rehypeRaw]}>{description}</ReactMarkdown>
-				description.split(" ").slice(0, 10).join(" ") + "..."
+				// @ts-ignore
+				<ReactMarkdown rehypePlugins={[rehypeRaw]}>
+					{/* only show first 100 character  xs */}
+					{description.length > 100
+						? description.slice(0, 100) + "..."
+						: description}
+				</ReactMarkdown>
+				// description.split(" ").slice(0, 10).join(" ") + "..."
 			}
 		</CardBody>
 		<CardFooter className="justify-between">

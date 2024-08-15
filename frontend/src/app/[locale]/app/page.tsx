@@ -154,7 +154,7 @@ function LandingPage() {
 					placeName: "Center",
 					id: "center",
 				},
-				zoomDefault: 15,
+				zoomDefault: 5,
 			});
 		}
 		fetchTask();
@@ -252,6 +252,7 @@ function LandingPage() {
 											}
 											width={600}
 											height={400}
+											className="object-fill"
 										/>
 									</div>
 									<div className="flex flex-col gap-1 ">
@@ -294,6 +295,7 @@ function LandingPage() {
 																alt={location.placeName}
 																width={600}
 																height={400}
+																className="object-cover max-h-24"
 															/>
 														</CardHeader>
 														<CardBody className="flex flex-row gap-1 items-center justify-between">

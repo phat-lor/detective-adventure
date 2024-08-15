@@ -2,13 +2,13 @@
 
 import React from "react";
 import { Button, Image, Skeleton } from "@nextui-org/react";
-import { Icon } from "@iconify/react";
 
 import { cn } from "@/lib/utils";
 import { Task } from "@/types";
 import { MapPinnedIcon } from "lucide-react";
 import { Link } from "@/lib/navigation";
-
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 export type PlaceListItemColor = {
 	name: string;
 	hex: string;
@@ -96,7 +96,17 @@ const PlaceListItem = React.forwardRef<HTMLDivElement, PlaceListItemProps>(
 								) : null} */}
 							</div>
 							{description ? (
-								<p className="text-small text-default-500">{description}</p>
+								<p className="text-small text-default-500">
+									{
+										// @ts-ignore
+										<ReactMarkdown rehypePlugins={[rehypeRaw]}>
+											{/* only show first 100 character  xs */}
+											{description.length > 100
+												? description.slice(0, 100) + "..."
+												: description}
+										</ReactMarkdown>
+									}
+								</p>
 							) : null}
 							<p className="text-small font-medium text-default-500 flex-row flex items-center gap-1">
 								<MapPinnedIcon /> {locations.length}
