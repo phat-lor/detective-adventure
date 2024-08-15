@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { Button, Switch } from "@nextui-org/react";
 
 import { cn } from "@/lib/utils";
 import PlaceListItem from "./place-list-item";
@@ -28,7 +27,7 @@ export default function PlacesList({ className }: { className?: string }) {
 						description: "Locale not found",
 					});
 				const res = await fetchTasks(locale);
-				console.log(res);
+				// console.log(res);
 				setPlaces(res);
 				setIsLoading(false);
 			} catch (err) {

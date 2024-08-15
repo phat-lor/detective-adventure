@@ -10,7 +10,9 @@ export default function AuthLayout({
 	const messages = useMessages();
 
 	return (
-		<NextIntlClientProvider messages={pick(messages, ["common", "landing"])}>
+		<NextIntlClientProvider
+			messages={pick(messages, ["common", "landing", "locale"])}
+		>
 			<MaxWidthWrapper className="flex w-full  flex-col min-h-screen lg:justify-center mt-3">
 				{children}
 			</MaxWidthWrapper>

@@ -10,14 +10,13 @@ import {
 	NavbarMenu,
 	NavbarMenuItem,
 	NavbarMenuToggle,
-	Link,
 	Button,
 	Divider,
 } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 
 import { cn } from "@/lib/utils";
-import { usePathname, useRouter } from "@/lib/navigation";
+import { Link, usePathname, useRouter } from "@/lib/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import DashNavAvatar from "./NavAvatar";
@@ -55,7 +54,9 @@ export function AppNavbar(props: NavbarProps) {
 				{/* <div className="rounded-full bg-foreground text-background">
 					<AcmeIcon size={34} />
 				</div> */}
-				<span className="font-medium">{t("title")}</span>
+				<Link className="font-medium" href="/">
+					{t("title")}
+				</Link>
 			</NavbarBrand>
 
 			{/* Center Content */}
@@ -106,31 +107,13 @@ export function AppNavbar(props: NavbarProps) {
 					},
 				}}
 			>
-				{session && session.user ? (
+				{session && session.user && (
 					<>
 						<NavbarMenuItem className="mb-4">
 							<DashNavAvatar userComponent />
 						</NavbarMenuItem>
 						<NavbarMenuItem>
 							<LangugeSwitcher />
-						</NavbarMenuItem>
-					</>
-				) : (
-					<>
-						<NavbarMenuItem>
-							<Button fullWidth as={Link} href="/signin" variant="faded">
-								{t("signin")}
-							</Button>
-						</NavbarMenuItem>
-						<NavbarMenuItem className="mb-4">
-							<Button
-								fullWidth
-								as={Link}
-								className="bg-foreground text-background"
-								href="/signup"
-							>
-								{t("signup")}
-							</Button>
 						</NavbarMenuItem>
 					</>
 				)}

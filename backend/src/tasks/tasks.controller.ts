@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -26,6 +27,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Image } from './model/Image.interface';
 import { Observable, of } from 'rxjs';
 import { join } from 'path';
+import { Response } from 'express';
 
 export const storage = {
   storage: diskStorage({
@@ -67,6 +69,19 @@ export class TasksController {
   @Get(':id')
   getTaskById(@Param('id') id: string) {
     return this.tasksService.getTaskById(id);
+  }
+  @Public()
+  @Post(':id/qr-code')
+  getTaskQRById(@Param('id') id: string, @Body() data: any) {
+    console.log(data);
+    if (!data.baseUrl) throw new BadRequestException('Missing baseUrl');
+    if (!data.locationIndex)
+      throw new BadRequestException('Missing locationIndex');
+    return this.tasksService.getTaskQRById(
+      id,
+      data.baseUrl,
+      data.locationIndex,
+    );
   }
 
   @UseRoles({

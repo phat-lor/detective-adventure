@@ -34,8 +34,8 @@ export default function TaskScan({
 	const { data: session } = useSession({ required: true });
 	const [loading, setLoading] = useState(false);
 	useEffect(() => {
-		if (task.status === "COMPLETED") {
-			router.push("/?done=true");
+		if (task.clearedLocations.length === task.task.locations.length) {
+			router.push("/app/?done=true");
 		}
 	}, [onClose, router, task]);
 
@@ -45,8 +45,8 @@ export default function TaskScan({
 		const value = result[0].rawValue;
 		// the value is url + ?locationId=locationId get the locationId and ad it to the query
 		try {
-			console.log(task);
-			console.log(value);
+			// console.log(task);
+			// console.log(value);
 			const url = new URL(value);
 			const locationId = url.searchParams
 				.get("locationId")
@@ -69,7 +69,7 @@ export default function TaskScan({
 				locationId ?? ""
 			);
 
-			console.log(verified);
+			// console.log(verified);
 
 			if (verified.ok) {
 				toast.success("QR Code Scanned", {
@@ -120,7 +120,14 @@ export default function TaskScan({
 								{loading ? (
 									<CircularProgress color="primary" size="lg" />
 								) : (
-									<Scanner onScan={(result) => onScanQRCode(result)} />
+									<Scanner
+										allowMultiple={false}
+										components={{
+											audio: false,
+											finder: true,
+										}}
+										onScan={(result) => onScanQRCode(result)}
+									/>
 								)}
 							</ModalBody>
 						</>

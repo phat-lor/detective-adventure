@@ -5,10 +5,15 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from 'src/users/dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { QrCodeService } from './qrcode/qrcode.service';
+import { Response } from 'express';
 
 @Injectable()
 export class TasksService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private qrcode: QrCodeService,
+  ) {}
   getAllTasks(page: number, perPage: number) {
     const paginate = createPaginator({ perPage });
 
@@ -70,6 +75,31 @@ export class TasksService {
       throw new NotFoundException('Task not found');
     }
     return task;
+  }
+
+  async getTaskQRById(id: string, baseUrl: String, locationIndex: number) {
+    const userTask = await this.prisma.userTask.findFirst({
+      where: {
+        taskId: id,
+      },
+      include: {
+        task: {
+          include: {
+            locations: true,
+          },
+        },
+      },
+    });
+    if (!userTask) {
+      throw new NotFoundException('User task not found');
+    }
+
+    const data = `${baseUrl}/app?taskId=${id}&locationId=${userTask.task.locations[locationIndex].id}&qr=true&placeId=${userTask.task.id}`;
+    const qrCodeDataURL = await this.qrcode.generateQrCode(data);
+
+    return {
+      imageUrl: qrCodeDataURL,
+    };
   }
 
   async updateTask(id: string, data: UpdateTaskDto) {

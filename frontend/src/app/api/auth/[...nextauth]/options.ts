@@ -18,7 +18,7 @@ async function refreshToken(token: JWT): Promise<JWT> {
 		);
 
 		if (res.status === 200) {
-			console.log("Token refreshed");
+			// console.log("Token refreshed");
 			return {
 				accessToken: res.data.accessToken,
 				refreshToken: res.data.refreshToken || token.refreshToken, // use new refreshToken if provided
@@ -87,7 +87,7 @@ export const authOptions: NextAuthOptions = {
 					});
 
 					if (res.status === 200) {
-						console.log("User signed in");
+						// console.log("User signed in");
 						return res.data;
 					}
 				} catch (error) {
@@ -110,7 +110,7 @@ export const authOptions: NextAuthOptions = {
 			return refreshedToken;
 		},
 		async session({ session, token }) {
-			console.log("Session callback");
+			// console.log("Session callback");
 			await getSessionData(session, token);
 			return session;
 		},

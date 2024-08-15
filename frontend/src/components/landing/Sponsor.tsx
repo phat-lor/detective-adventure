@@ -14,7 +14,7 @@ export default function Sponsors() {
 		const fetchGSBSvg = async () => {
 			const res = await fetch("/assets/landing/gsb.svg");
 			const svg = await res.text();
-			console.log(svg);
+			// console.log(svg);
 			setGSB(svg);
 		};
 		fetchGSBSvg();

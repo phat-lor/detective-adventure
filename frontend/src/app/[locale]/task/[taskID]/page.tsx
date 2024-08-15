@@ -7,6 +7,7 @@ import {
 	CardHeader,
 	CircularProgress,
 	Divider,
+	Image,
 	Modal,
 	ModalBody,
 	ModalContent,
@@ -22,10 +23,14 @@ import { ScanBarcodeIcon } from "lucide-react";
 import TaskScan from "@/components/TaskScan";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import LangugeSwitcher from "@/components/locale/LangSwitcher";
+import { getLocale } from "next-intl/server";
+import { headers } from "next/headers";
 interface Task {
 	id: string;
 	createdAt: string;
 	updatedAt: string;
+	thumbnails: string[];
 	title: string;
 	description: string;
 	locations: Location[];
@@ -35,6 +40,7 @@ interface Location {
 	id: string;
 	createdAt: string;
 	updatedAt: string;
+	thumbnails: string[];
 	placeName: string;
 	details: string;
 	latitude: number;
@@ -61,8 +67,13 @@ export default async function Page({
 	searchParams?: { [key: string]: string | string[] | undefined };
 }) {
 	const session = await getServerSession(authOptions);
+	const locale = await getLocale();
 
-	const task = await getUserTaskById(session?.accessToken ?? "", params.taskID);
+	const task = await getUserTaskById(
+		session?.accessToken ?? "",
+		params.taskID,
+		locale
+	);
 
 	// get uncleared locations
 	const unclearedLocations = task?.task.locations.filter(
@@ -72,9 +83,9 @@ export default async function Page({
 			)
 	);
 
-	console.log(task?.clearedLocations);
+	// console.log(task?.clearedLocations);
 
-	console.log(unclearedLocations);
+	// console.log(unclearedLocations);
 
 	return (
 		<Modal
@@ -86,11 +97,19 @@ export default async function Page({
 			size="xl"
 		>
 			<ModalContent>
-				<ModalHeader className="text-2xl font-bold">
+				<ModalHeader className="text-2xl font-bold flex justify-between">
 					{task?.task.title}
+					<div>
+						<LangugeSwitcher />
+					</div>
 				</ModalHeader>
 				<ModalBody>
-					<div className="prose w-xl ">
+					<Image
+						src={unclearedLocations?.[0]?.thumbnails?.[0]}
+						alt={task?.task.title}
+						width={600}
+					/>
+					<div className="prose w-xl dark:prose-invert">
 						{task && (
 							// @ts-ignore
 							<ReactMarkdown rehypePlugins={[rehypeRaw]}>

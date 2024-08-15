@@ -50,7 +50,7 @@ const PlaceListItem = React.forwardRef<HTMLDivElement, PlaceListItemProps>(
 				)}
 				{...props}
 			>
-				<Link href={`/app/?locationId=${id}`}>
+				<Link href={`/app/?placeId=${id}`}>
 					<Image
 						isBlurred
 						isZoomed

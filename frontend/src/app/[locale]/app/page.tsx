@@ -68,7 +68,7 @@ function LandingPage() {
 			return toast.error("Locale not found", {
 				description: "Locale not found",
 			});
-		console.log(locale);
+		// console.log(locale);
 		const data = await getUserTasks(session?.accessToken ?? "", locale);
 		if (!data) {
 			setLoading(false);
@@ -97,12 +97,12 @@ function LandingPage() {
 				locations: task.locations,
 			};
 		});
-		console.log(processedTasks);
+		// console.log(processedTasks);
 		// @ts-ignore
 		setData({ data: processedTasks, meta: data.meta });
 		setLoading(false);
 
-		const selPlace = searchParam.get("locationId");
+		const selPlace = searchParam.get("placeId");
 
 		if (selPlace) {
 			setSelected(selPlace);
@@ -124,7 +124,7 @@ function LandingPage() {
 					description: "Task not found",
 				});
 			}
-			console.log(task);
+			// console.log(task);
 
 			task.status;
 
@@ -145,7 +145,7 @@ function LandingPage() {
 			const longDiff = Math.max(...longitudes) - Math.min(...longitudes);
 			const calculatedZoom = Math.max(latDiff, longDiff);
 
-			console.log(status);
+			// console.log(status);
 			setSelectedData({
 				...task,
 				centerDefault: {
@@ -288,16 +288,14 @@ function LandingPage() {
 										>
 											{selectedData?.locations &&
 												selectedData?.locations.map((location) => (
-													<Card key={location.id} className="min-w-40">
-														<CardHeader>
-															<Image
-																src={location.thumbnails?.[0]}
-																alt={location.placeName}
-																width={600}
-																height={400}
-																className="object-cover max-h-24"
-															/>
-														</CardHeader>
+													<Card key={location.id} className="min-w-60">
+														<Image
+															src={location.thumbnails?.[0]}
+															alt={location.placeName}
+															width={600}
+															height={400}
+															className="max-h-24 object-fill"
+														/>
 														<CardBody className="flex flex-row gap-1 items-center justify-between">
 															<p className="text-lg font-semibold">
 																{location.placeName}

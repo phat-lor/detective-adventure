@@ -33,7 +33,23 @@ export async function getUserTasks(
 				to: locale,
 			});
 
-			return { ...task, title: translated, description: description };
+			const locations = await Promise.all(
+				task.locations.map(async (location) => {
+					const placeName = await translate(location.placeName, {
+						from: writeLang,
+						to: locale,
+					});
+
+					return { ...location, placeName };
+				})
+			);
+
+			return {
+				...task,
+				title: translated,
+				description: description,
+				locations,
+			};
 		})
 	);
 
@@ -43,7 +59,11 @@ export async function getUserTasks(
 	};
 }
 
-export async function getUserTaskById(access_token: string, id: string) {
+export async function getUserTaskById(
+	access_token: string,
+	id: string,
+	locale: string = "en"
+) {
 	if (!access_token) {
 		return;
 	}
@@ -52,7 +72,33 @@ export async function getUserTaskById(access_token: string, id: string) {
 		headers: { Authorization: `Bearer ${access_token}` },
 	});
 
-	return res.data as TaskInstance;
+	const data = res.data as TaskInstance;
+
+	const translated = Promise.all(
+		data.task.locations.map(async (location) => {
+			const placeName = await translate(location.placeName, {
+				from: writeLang,
+				to: locale,
+			});
+
+			const details = await translate(location.details, {
+				from: writeLang,
+				to: locale,
+			});
+
+			return { ...location, placeName, details };
+		})
+	);
+
+	const taskTitle = await translate(data.task.title, {
+		from: writeLang,
+		to: locale,
+	});
+
+	data.task.title = taskTitle;
+	data.task.locations = await translated;
+
+	return data;
 }
 
 export async function startTask(access_token: string, id: string) {
@@ -114,10 +160,10 @@ export async function fetchTasks(locale: string = "en") {
 				to: locale,
 			});
 
-			console.log(translated, description);
+			// console.log(translated, description);
 			return { ...task, title: translated, description: description };
 		})
 	);
-	console.log(processed);
+	// console.log(processed);
 	return processed as Task[];
 }
