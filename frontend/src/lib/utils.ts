@@ -33,3 +33,7 @@ export function cn(...inputs: ClassValue[]) {
 export const validatePhoneNumber = (phoneNumber: string) =>
 	// ^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$
 	phoneNumber.match("^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$");
+
+export function capitalize(str: string) {
+	return str.charAt(0).toUpperCase() + str.slice(1);
+}

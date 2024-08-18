@@ -62,7 +62,7 @@ function DashNavAvatar({ userComponent = false }: { userComponent?: boolean }) {
 					<Divider />
 					{session?.user.role === Role.ADMIN && (
 						<Link
-							href="/app/admin"
+							href="/admin"
 							className="flex m-1 p-2 hover:bg-default-200 rounded-md gap-2 transition"
 						>
 							<ShieldCheckIcon size={20} />

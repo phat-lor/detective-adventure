@@ -38,10 +38,10 @@ model UserTask {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  task Task @relation(fields: [taskId], references: [id])
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
   taskId String
 
   clearedLocations ClearedLocation[]
@@ -75,7 +75,7 @@ model TaskLocation {
   latitude Float
   longitude Float
 
-  task Task @relation(fields: [taskId], references: [id])
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
   taskId String
 
   clearedLocations ClearedLocation[]
@@ -88,10 +88,10 @@ model ClearedLocation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userTask UserTask @relation(fields: [userTaskId], references: [id])
+  userTask UserTask @relation(fields: [userTaskId], references: [id], onDelete: Cascade)
   userTaskId String
 
-  taskLocation TaskLocation @relation(fields: [taskLocationId], references: [id])
+  taskLocation TaskLocation @relation(fields: [taskLocationId], references: [id], onDelete: Cascade)
   taskLocationId String
 
   @@map("cleared_locations")

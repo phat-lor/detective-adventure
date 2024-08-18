@@ -13,6 +13,7 @@ import {
 import { useDisclosure } from "@nextui-org/use-disclosure";
 import { PartyPopperIcon, TestTubeDiagonalIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/lib/navigation";
 
 export default function Hero() {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -72,9 +73,11 @@ export default function Hero() {
 					</p>
 					<div className="items-center justify-center gap-x-3 space-y-3 sm:flex sm:space-y-0">
 						<motion.div whileHover={{ scale: 1.05 }}>
-							<Button onPress={onOpen} color="primary" variant="solid">
-								{t("hero.start")}
-							</Button>
+							<Link href="/signin">
+								<Button onPress={onOpen} color="primary" variant="solid">
+									{t("hero.start")}
+								</Button>
+							</Link>
 						</motion.div>
 					</div>
 				</motion.div>
