@@ -80,7 +80,7 @@ function SigninPage() {
 
 			if (res?.ok) {
 				toast.success(t("form.success"));
-				router.push("/app");
+				router.push(`/${res.url}`);
 			} else {
 				// toast.error(
 				// 	t("form.error").replace("%error%", res?.error || "Unknown")

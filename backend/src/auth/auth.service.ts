@@ -24,7 +24,7 @@ export class AuthenticationService {
     private jwtService: JwtService,
   ) {}
 
-  private ACCESS_TOKEN_EXPIRES_IN = 60 * 15; // 15 minutes
+  private ACCESS_TOKEN_EXPIRES_IN = 60 * 60 * 24 * 30; // 30 days
 
   /**
    * Sign up a user with the provided authentication data.
@@ -193,7 +193,7 @@ export class AuthenticationService {
         },
         {
           secret: process.env.JWT_ACCESS_SECRECT,
-          expiresIn: this.ACCESS_TOKEN_EXPIRES_IN, // 15 minutes
+          expiresIn: this.ACCESS_TOKEN_EXPIRES_IN,
         },
       ),
       this.jwtService.signAsync(
