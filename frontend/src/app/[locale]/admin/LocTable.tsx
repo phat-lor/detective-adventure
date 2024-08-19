@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
 	Table,
 	TableHeader,
@@ -19,19 +19,24 @@ import {
 	Selection,
 	ChipProps,
 	SortDescriptor,
+	Spinner,
 } from "@nextui-org/react";
 // import { PlusIcon } from "./PlusIcon";
 // import { VerticalDotsIcon } from "./VerticalDotsIcon";
 // import { ChevronDownIcon } from "./ChevronDownIcon";
 // import { SearchIcon } from "./SearchIcon";
-import { columns, users, statusOptions } from "./data";
+import { columns, statusOptions } from "./data";
 import {
 	ChevronDownIcon,
 	EllipsisVerticalIcon,
+	ExternalLinkIcon,
+	MapPinnedIcon,
 	PlusIcon,
 	SearchIcon,
 } from "lucide-react";
 import { capitalize } from "@/lib/utils";
+import { Task } from "@/types";
+import { fetchTasks } from "../server";
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
 	active: "success",
@@ -39,9 +44,7 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 	vacation: "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
-
-type User = (typeof users)[0];
+const INITIAL_VISIBLE_COLUMNS = ["title", "description", "actions"];
 
 export default function App() {
 	const [filterValue, setFilterValue] = React.useState("");
@@ -51,15 +54,16 @@ export default function App() {
 	const [visibleColumns, setVisibleColumns] = React.useState<Selection>(
 		new Set(INITIAL_VISIBLE_COLUMNS)
 	);
-	const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
-	const [rowsPerPage, setRowsPerPage] = React.useState(5);
+	const [rowsPerPage, setRowsPerPage] = React.useState(10);
 	const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
 		column: "age",
 		direction: "ascending",
 	});
 	const [page, setPage] = React.useState(1);
+	const [loading, setLoading] = React.useState(true);
+	const [places, setPlaces] = React.useState<Task[]>([]);
 
-	const pages = Math.ceil(users.length / rowsPerPage);
+	const pages = Math.ceil(places.length / rowsPerPage);
 
 	const hasSearchFilter = Boolean(filterValue);
 
@@ -72,24 +76,26 @@ export default function App() {
 	}, [visibleColumns]);
 
 	const filteredItems = React.useMemo(() => {
-		let filteredUsers = [...users];
+		let filteredUsers = [...places];
 
 		if (hasSearchFilter) {
 			filteredUsers = filteredUsers.filter((user) =>
-				user.name.toLowerCase().includes(filterValue.toLowerCase())
-			);
-		}
-		if (
-			statusFilter !== "all" &&
-			Array.from(statusFilter).length !== statusOptions.length
-		) {
-			filteredUsers = filteredUsers.filter((user) =>
-				Array.from(statusFilter).includes(user.status)
+				user.title.toLowerCase().includes(filterValue.toLowerCase())
 			);
 		}
 
 		return filteredUsers;
-	}, [users, filterValue, statusFilter]);
+	}, [places, filterValue]);
+
+	useEffect(() => {
+		const fetchPlaces = async () => {
+			setLoading(true);
+			const res = await fetchTasks();
+			setPlaces(res);
+			setLoading(false);
+		};
+		fetchPlaces();
+	}, []);
 
 	const items = React.useMemo(() => {
 		const start = (page - 1) * rowsPerPage;
@@ -99,52 +105,74 @@ export default function App() {
 	}, [page, filteredItems, rowsPerPage]);
 
 	const sortedItems = React.useMemo(() => {
-		return [...items].sort((a: User, b: User) => {
-			const first = a[sortDescriptor.column as keyof User] as number;
-			const second = b[sortDescriptor.column as keyof User] as number;
+		return [...items].sort((a: Task, b: Task) => {
+			const first = a[sortDescriptor.column as keyof Task] as number;
+			const second = b[sortDescriptor.column as keyof Task] as number;
 			const cmp = first < second ? -1 : first > second ? 1 : 0;
 
 			return sortDescriptor.direction === "descending" ? -cmp : cmp;
 		});
 	}, [sortDescriptor, items]);
 
-	const renderCell = React.useCallback((user: User, columnKey: React.Key) => {
-		const cellValue = user[columnKey as keyof User];
+	const renderCell = React.useCallback((user: Task, columnKey: React.Key) => {
+		const cellValue = user[columnKey as keyof Task];
 
 		switch (columnKey) {
-			case "name":
+			case "title":
 				return (
 					<User
-						avatarProps={{ radius: "full", size: "sm", src: user.avatar }}
+						avatarProps={{
+							radius: "full",
+							size: "sm",
+							src: user.thumbnails?.[0],
+						}}
 						classNames={{
 							description: "text-default-500",
 						}}
-						description={user.email}
-						name={cellValue}
+						description={user.description.slice(0, 20)}
+						name={cellValue as string}
 					>
-						{user.email}
+						{user.title}
 					</User>
 				);
-			case "role":
+			case "description":
 				return (
 					<div className="flex flex-col">
-						<p className="text-bold text-small capitalize">{cellValue}</p>
-						<p className="text-bold text-tiny capitalize text-default-500">
-							{user.team}
+						<p className="text-bold text-small capitalize">
+							{cellValue?.toString().slice(0, 50)}...
 						</p>
 					</div>
 				);
-			case "status":
+			case "locations":
 				return (
-					<Chip
-						className="capitalize border-none gap-1 text-default-600"
-						color={statusColorMap[user.status]}
-						size="sm"
-						variant="dot"
-					>
-						{cellValue}
-					</Chip>
+					<div className="flex flex-row gap-2 items-center">
+						<MapPinnedIcon />
+						<p className="text-bold text-small capitalize">
+							{user.locations.length}
+						</p>
+					</div>
 				);
+				break;
+			// case "role":
+			// 	return (
+			// 		<div className="flex flex-col">
+			// 			<p className="text-bold text-small capitalize">{cellValue}</p>
+			// 			<p className="text-bold text-tiny capitalize text-default-500">
+			// 				{user.team}
+			// 			</p>
+			// 		</div>
+			// 	);
+			// case "status":
+			// 	return (
+			// 		<Chip
+			// 			className="capitalize border-none gap-1 text-default-600"
+			// 			color={statusColorMap[user.status]}
+			// 			size="sm"
+			// 			variant="dot"
+			// 		>
+			// 			{cellValue}
+			// 		</Chip>
+			// 	);
 			case "actions":
 				return (
 					<div className="relative flex justify-end items-center gap-2">
@@ -155,15 +183,23 @@ export default function App() {
 								</Button>
 							</DropdownTrigger>
 							<DropdownMenu>
-								<DropdownItem>View</DropdownItem>
+								<DropdownItem
+									onClick={() => {
+										window.open(`/app/?placeId=${user.id}`, "_blank");
+									}}
+								>
+									View
+								</DropdownItem>
 								<DropdownItem>Edit</DropdownItem>
-								<DropdownItem>Delete</DropdownItem>
+								<DropdownItem color="danger" onClick={() => {}}>
+									Delete
+								</DropdownItem>
 							</DropdownMenu>
 						</Dropdown>
 					</div>
 				);
 			default:
-				return cellValue;
+				return String(cellValue);
 		}
 	}, []);
 
@@ -210,31 +246,6 @@ export default function App() {
 									size="sm"
 									variant="flat"
 								>
-									Status
-								</Button>
-							</DropdownTrigger>
-							<DropdownMenu
-								disallowEmptySelection
-								aria-label="Table Columns"
-								closeOnSelect={false}
-								selectedKeys={statusFilter}
-								selectionMode="multiple"
-								onSelectionChange={setStatusFilter}
-							>
-								{statusOptions.map((status) => (
-									<DropdownItem key={status.uid} className="capitalize">
-										{capitalize(status.name)}
-									</DropdownItem>
-								))}
-							</DropdownMenu>
-						</Dropdown>
-						<Dropdown>
-							<DropdownTrigger className="hidden sm:flex">
-								<Button
-									endContent={<ChevronDownIcon className="text-small" />}
-									size="sm"
-									variant="flat"
-								>
 									Columns
 								</Button>
 							</DropdownTrigger>
@@ -264,7 +275,7 @@ export default function App() {
 				</div>
 				<div className="flex justify-between items-center">
 					<span className="text-default-400 text-small">
-						Total {users.length} users
+						Total {places.length} places
 					</span>
 					<label className="flex items-center text-default-400 text-small">
 						Rows per page:
@@ -282,11 +293,10 @@ export default function App() {
 		);
 	}, [
 		filterValue,
-		statusFilter,
 		visibleColumns,
 		onSearchChange,
 		onRowsPerPageChange,
-		users.length,
+		places.length,
 		hasSearchFilter,
 	]);
 
@@ -365,7 +375,12 @@ export default function App() {
 					</TableColumn>
 				)}
 			</TableHeader>
-			<TableBody emptyContent={"No users found"} items={sortedItems}>
+			<TableBody
+				emptyContent={"No places found"}
+				items={sortedItems}
+				isLoading={loading}
+				loadingContent={<Spinner label="Loading..." />}
+			>
 				{(item) => (
 					<TableRow key={item.id}>
 						{(columnKey) => (
